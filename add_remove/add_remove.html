@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="add_remove.css">
+    <script src="add_remove.js" defer> </script>
+    <title>Admin Home</title>
+</head>
+<body>
+    <header>
+        <h1>Admin Home</h1>
+    </header>
+    <main>
+        <section class="form">
+            <form action="" id="add_form">
+                    <h2>Library Form</h2>
+                    Name: <input id="name" type="text" placeholder="Enter book name" required> <br>
+                    Author: <input id="author" type="text" placeholder="Enter author name" required> <br>
+                    Publisher: <input id="publisher" type="text" placeholder="Enter publisher name" required> <br>
+                    Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required> <br>
+                    <button id = "add_button">Submit</button>
+            </form>
+        </section>
+        <section class="catalouge">
+            <h2>Catalouge</h2>
+            <table>
+                <table class="books">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Author</th>
+                            <th>Publisher</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody id = 'tableB'>
+                    </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>
