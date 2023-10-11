@@ -53,6 +53,7 @@
         const tableB = document.getElementById('tableB');
 
         function displayBooks(temp) {
+            var flag = false;
             tableB.innerHTML = "";
             const booksRef = ref(db, 'user');
             get(booksRef).then((snapshot) => {
@@ -61,6 +62,7 @@
                     for (const key in books) {
                         const book = books[key];
                         if (book.name === temp) {
+                            flag = true;
                             const row = `<tr>
                                     <td>${book.name}</td>
                                     <td>${book.author}</td>
@@ -72,7 +74,11 @@
                         
                     }
                 }
+                if(!flag) {
+                alert("Book Not Found");
+            }
             });
+            
         }
 
         var buttonx = document.querySelector("#add_button");
