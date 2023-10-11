@@ -87,8 +87,8 @@ table.books tr:hover {
 footer
 {
     font-size: large;
-    margin: 7vw;
-    margin-top: 13vw;
+    margin: 20px;
+    margin-top: 7vw;
 }
 footer>a
 {
