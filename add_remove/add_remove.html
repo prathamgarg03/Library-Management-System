@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="add_remove.css">
     <script src="add_remove.js" defer> </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script>
     <title>Add Books</title>
 </head>
 <body>
@@ -19,7 +20,7 @@
                     Author: <input id="author" type="text" placeholder="Enter author name" required> <br>
                     Publisher: <input id="publisher" type="text" placeholder="Enter publisher name" required> <br>
                     Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required> <br>
-                    <button id = "add_button">Submit</button>
+                    <button type="submit" id = "add_button">Submit</button>
             </form>
         </section>
         <section class="catalouge">

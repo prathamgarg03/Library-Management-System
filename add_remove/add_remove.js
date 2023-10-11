@@ -1,3 +1,46 @@
+const firebaseConfig = {
+    apiKey: "AIzaSyByusMHtNMMtKsHcbsatmwgymD9nlwuIu0",
+    authDomain: "library-management-syste-9b904.firebaseapp.com",
+    databaseURL: "https://library-management-syste-9b904-default-rtdb.firebaseio.com",
+    projectId: "library-management-syste-9b904",
+    storageBucket: "library-management-syste-9b904.appspot.com",
+    messagingSenderId: "579021273060",
+    appId: "1:579021273060:web:65b743966ea659026eb9f1",
+    measurementId: "G-X410SE23SB"
+  };
+
+
+firebase.initializeApp(firebaseConfig);
+
+var lms = firebase.database().ref("library-management-syste");
+
+document.getElementById('add_form').addEventListener('submit', submitAddForm);
+
+function submitAddForm(e) {
+    e.preventDefault();
+    var name = getValue('name');
+    var author = getValue('author');
+    var publisher = getValue('publisher');
+    var quantity = getValue('quantity');
+
+    // console.log(name, author, publisher, quantity);
+    saveElm(name, author, publisher,  quantity); 
+}
+
+const saveElm = (name, author, publisher, quantity) => {
+    var newForm = lms.push();
+    
+    newForm.set({
+        name : name,
+        author : author,
+        publisher : publisher,
+        quantity : quantity,
+    });
+
+}
+const getValue = (id) => {
+    return document.getElementById(id).value;
+}
 var arrayOfBooks =[];
 
 function DisplayTable(){
