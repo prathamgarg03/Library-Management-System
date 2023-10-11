@@ -13,7 +13,7 @@
         <form action="" id="add_form">
                 <h2>Search Catalouge</h2>
                 <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
-                <button id = "add_button">Search</button>
+                <button id = "add_button" type="button">Search</button>
         </form>
     </section>
     
@@ -52,26 +52,36 @@
         
         const tableB = document.getElementById('tableB');
 
-        function displayBooks() {
+        function displayBooks(temp) {
+            tableB.innerHTML = "";
             const booksRef = ref(db, 'user');
             get(booksRef).then((snapshot) => {
                 if (snapshot.exists()) {
                     const books = snapshot.val();
                     for (const key in books) {
                         const book = books[key];
-                        const row = `<tr>
-                                   <td>${book.name}</td>
-                                   <td>${book.author}</td>
-                                   <td>${book.publisher}</td>
-                                   <td>${book.quantity}</td>
-                               </tr>`;
-                        tableB.innerHTML += row;
+                        if (book.name === temp) {
+                            const row = `<tr>
+                                    <td>${book.name}</td>
+                                    <td>${book.author}</td>
+                                    <td>${book.publisher}</td>
+                                    <td>${book.quantity}</td>
+                                    </tr>`;
+                            tableB.innerHTML += row;
+                        }
+                        
                     }
                 }
             });
         }
-        displayBooks();
 
+        var buttonx = document.querySelector("#add_button");
+        //var temp = document.getElementById('name').value;
+        buttonx.addEventListener('click', function(e) {
+            e.preventDefault();
+            var temp = document.getElementById('name').value;
+            displayBooks(temp);
+        });
 
     </script>
 </body>
