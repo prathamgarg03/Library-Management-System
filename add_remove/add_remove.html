@@ -62,17 +62,41 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        
+        const tableB = document.getElementById('tableB');
+
+        function displayBooks() {
+            const booksRef = ref(db, 'user');
+            get(booksRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const books = snapshot.val();
+                    for (const key in books) {
+                        const book = books[key];
+                        const row = `<tr>
+                                   <td>${book.name}</td>
+                                   <td>${book.author}</td>
+                                   <td>${book.publisher}</td>
+                                   <td>${book.quantity}</td>
+                               </tr>`;
+                        tableB.innerHTML += row;
+                    }
+                }
+            });
+        }
+
+        // Call the function to display books when the page loads
+        displayBooks();
+
         document.getElementById("add_button").addEventListener('click', function (e) {
-            e.preventDefault();
+            // e.preventDefault();
             set(ref(db, 'user/' + document.getElementById("name").value), {
                 name: document.getElementById("name").value,
                 author: document.getElementById("author").value,
                 publisher: document.getElementById("publisher").value,
                 quantity: document.getElementById("quantity").value
             });
-            alert("Book Added Successfuly");
-        })
-
+            alert("Book Added Successfully");
+        });
     </script>
 </body>
 
