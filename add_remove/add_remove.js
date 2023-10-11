@@ -57,7 +57,7 @@ function addBook() {
     //tempDisplay.clear();
 }
 
-const scrollLink = document.getElementById("scrolldown");
+const scrollLink = document.getElementById("#scrolldown");
 
 window.addEventListener("scroll", function() {
     const scrollPosition = window.scrollY;
