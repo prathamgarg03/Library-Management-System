@@ -3,5 +3,5 @@ button1.onclick = goToHomePage;
 
 function goToHomePage(){
    const path = "../studentHome/studentHome.html";
-   window.open(path, "_blank");
+   window.open(path, "_self");
 }
