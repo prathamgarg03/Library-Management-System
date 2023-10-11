@@ -14,10 +14,9 @@ firebase.initializeApp(firebaseConfig);
 
 var lms = firebase.database().ref("library-management-syste");
 
-document.getElementById('add_form').addEventListener('submit', submitAddForm);
+document.getElementById('add_form').onclick(submitAddForm);
 
-function submitAddForm(e) {
-    e.preventDefault();
+function submitAddForm() {
     var name = getValue('name');
     var author = getValue('author');
     var publisher = getValue('publisher');
