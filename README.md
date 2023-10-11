@@ -1,1 +1,1 @@
-# Library-Management-System-CMPT-276-
+# [CMPT 276] Library-Management-System
