@@ -83,3 +83,20 @@ table.books td {
 table.books tr:hover {
     background-color: #f2f2f2;
 }
+
+footer
+{
+    font-size: large;
+    margin: 20px;
+    margin-top: 7vw;
+}
+footer>a
+{
+    color: #333333;
+    text-decoration: none;
+}
+
+footer>a:hover
+{
+    color:coral;
+}
