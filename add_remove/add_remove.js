@@ -57,6 +57,13 @@ function addBook() {
     //tempDisplay.clear();
 }
     
+window.addEventListener("scroll", function() {
+    const scrollElement = document.querySelector("#scrolldown");
+    const scrollPosition = window.scrollY;
+
+    scrollElement.style.top = (scrollPosition >= 100) ? "0" : "-100px";
+});
+
 
 
 
