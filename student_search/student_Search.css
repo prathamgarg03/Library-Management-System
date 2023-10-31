@@ -26,7 +26,7 @@ h2 {
 }
 section.form{ 
     margin: 10px auto;
-    width: 50%;
+    width: 80%;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
@@ -54,6 +54,7 @@ button {
     font-size: 18px;
     cursor: pointer;
     margin: 15px;
+    margin-right:1px ;
 }
 section.catalouge{
     margin: 10px auto;
