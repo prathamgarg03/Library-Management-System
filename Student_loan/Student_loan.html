@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Search</title>
-    <link rel="stylesheet" href="../student_search/student_Search.css">
+    <link rel="stylesheet" href="student_Search.css">
 </head>
 <body>
     <header><h1>Find Books</h1></header>
@@ -17,86 +17,120 @@
             <button id="loan_button" type="button">Loan</button>
         </form>
     </section>
-      
-  <section class="catalouge">
-        <table>
-            <table class="books">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Author</th>
-                        <th>Publisher</th>
-                        <th>Quantity</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tableB">
-                </tbody>
-            </table>
-        </section>
+    
+    <section class="catalouge">
+        <table class="books">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableB">
+            </tbody>
+        </table>
+    </section>
+    
+    <!-- Add a new section for displaying loaned books -->
+    <section class="loaned-books">
+        <h2>Loaned Books</h2>
+        <table class="books">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody id="loanedTable">
+            </tbody>
+        </table>
+    </section>
+    
+    <footer>
+        <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
+    </footer>
+</body>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
-        <footer>
-            <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
-        </footer>
-    </body>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    const firebaseConfig = {
+        apiKey: "Your-API-Key",
+        authDomain: "Your-Auth-Domain",
+        projectId: "Your-Project-ID",
+        storageBucket: "Your-Storage-Bucket",
+        messagingSenderId: "Your-Messaging-Sender-ID",
+        appId: "Your-App-ID"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    const tableB = document.getElementById('tableB');
+    const loanedTable = document.getElementById('loanedTable');
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
-            authDomain: "lms1-2fdcb.firebaseapp.com",
-            projectId: "lms1-2fdcb",
-            storageBucket: "lms1-2fdcb.appspot.com",
-            messagingSenderId: "952940918932",
-            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        
-        const tableB = document.getElementById('tableB');
+    function loanBook(bookName) {
+        // Check if the book is available and allocate it to the student
+        const booksRef = ref(db, 'user');
+        get(booksRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const books = snapshot.val();
+                for (const key in books) {
+                    const book = books[key];
+                    if (book.name === bookName) {
+                        if (book.quantity > 0) {
+                            // The book is available, allocate it to the student
+                            // You can update the quantity here
+                            const updatedQuantity = book.quantity - 1;
 
-        function loanBook(bookName) {
-            // Check if the book is available and allocate it to the student
-            const booksRef = ref(db, 'user');
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        if (book.name === bookName) {
-                            if (book.quantity > 0) {
-                                // The book is available, allocate it to the student
-                                // You can update the quantity here
-                                const updatedQuantity = book.quantity - 1;
+                            // Update the database to allocate the book
+                            const bookRef = child(booksRef, key);
+                            set(bookRef, {
+                                ...book,
+                                quantity: updatedQuantity
+                            });
 
-                                // Update the database to allocate the book
-                                const bookRef = child(booksRef, key);
-                                set(bookRef, {
-                                    ...book,
-                                    quantity: updatedQuantity
-                                });
+                            // Display a success message or perform further actions
+                            alert("Book Allocated Successfully!");
 
-                                // Display a success message or perform further actions
-                                alert("Book Allocated Successfully!");
-                            } else {
-                                // The book is not available
-                                alert("Book is currently unavailable.");
-                            }
-                            return;
+                            // Add the allocated book to the loaned books table
+                            addToLoanedBooksTable(book);
+
+                        } else {
+                            // The book is not available
+                            alert("Book is currently unavailable.");
                         }
+                        return;
                     }
-                    // If the loop completes and the book is not found
-                    alert("Book Not Found");
                 }
-            });
-        }
-
-        var loanButton = document.querySelector("#loan_button");
-        loanButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            var bookName = document.getElementById('name').value;
-            loanBook(bookName);
+                // If the loop completes and the book is not found
+                alert("Book Not Found");
+            }
         });
-    </script>
+    }
+
+    function addToLoanedBooksTable(book) {
+        const row = `
+            <tr>
+                <td>${book.name}</td>
+                <td>${book.author}</td>
+                <td>${book.publisher}</td>
+                <td>${book.quantity}</td>
+            </tr>
+        `;
+        loanedTable.innerHTML += row;
+    }
+
+    var loanButton = document.querySelector("#loan_button");
+    loanButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        var bookName = document.getElementById('name').value;
+        loanBook(bookName);
+    });
+</script>
 </html>
+
