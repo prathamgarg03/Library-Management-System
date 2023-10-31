@@ -20,8 +20,9 @@
                 Name: <input id="name" type="text" placeholder="Enter book name" required> <br>
                 Author: <input id="author" type="text" placeholder="Enter author name" required> <br>
                 Publisher: <input id="publisher" type="text" placeholder="Enter publisher name" required> <br>
-                Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required> <br>
-                <button type="submit" id="add_button">Submit</button>
+                Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required><br>
+                <button type="submit" id="add_button">Add</button>
+                <button type="submit" id="remove_button">Remove</button>
             </form>
         </section>
         <section class="catalouge">
@@ -62,11 +63,12 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        
+
         const tableB = document.getElementById('tableB');
 
         function displayBooks() {
             const booksRef = ref(db, 'user');
+            tableB.innerHTML="";
             get(booksRef).then((snapshot) => {
                 if (snapshot.exists()) {
                     const books = snapshot.val();
@@ -88,7 +90,7 @@
         displayBooks();
 
         document.getElementById("add_button").addEventListener('click', function (e) {
-            // e.preventDefault();
+            // e.preventDefault()
             set(ref(db, 'user/' + document.getElementById("name").value), {
                 name: document.getElementById("name").value,
                 author: document.getElementById("author").value,
@@ -97,6 +99,49 @@
             });
             alert("Book Added Successfully");
         });
+
+            // e.preventDefault();
+            function removeBook(bookName) {
+                // Check if the book is available and allocate it to the student
+                const booksRef = ref(db, 'user');
+                get(booksRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const books = snapshot.val();
+                        for (const key in books) {
+                            const book = books[key];
+                            if (book.name === bookName) {
+                                if (book.quantity > 0) {
+                                    const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
+                                    const bookRef = child(booksRef, key);
+                                    set(bookRef, {
+                                        ...book,
+                                        quantity: updatedQuantity
+                                    });
+
+                                    alert("Book Removed Successfully!");
+                                    displayBooks();
+                                }
+                                else {
+                                    alert("Book is currently unavailable.");
+                                }
+                                return;
+                            }
+                        }
+                    }
+                });
+            }
+
+            var removeButton = document.querySelector("#remove_button");
+            removeButton.addEventListener('click', function (e) {
+                if(document.getElementById("quantity").value=="")
+                {
+                    window.alert("Please Fill The Quantity.")
+                }    
+
+                e.preventDefault();
+                var bookName = document.getElementById('name').value;
+                removeBook(bookName);
+            });
     </script>
 </body>
 
