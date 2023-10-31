@@ -14,6 +14,7 @@
                 <h2>Search Catalouge</h2>
                 <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
                 <button id = "add_button" type="button">Search</button>
+                <button id="loan_button" type="button">Loan</button>
         </form>
     </section>
     
@@ -26,6 +27,7 @@
                         <th>Author</th>
                         <th>Publisher</th>
                         <th>Quantity</th>
+                    
                     </tr>
                 </thead>
                 <tbody id = 'tableB'>
@@ -89,6 +91,54 @@
             displayBooks(temp);
         });
 
+        var Enter_key = document.getElementById('name');
+        Enter_key.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var temp = document.getElementById('name').value;
+                    displayBooks(temp);
+                }
+            });
+
+        function loanBook(bookName) {
+            // Check if the book is available and allocate it to the student
+            const booksRef = ref(db, 'user');
+            get(booksRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const books = snapshot.val();
+                    for (const key in books) {
+                        const book = books[key];
+                        if (book.name === bookName) {
+                            if (book.quantity > 0) {
+                                const updatedQuantity = book.quantity - 1;
+                                const bookRef = child(booksRef, key);
+                                set(bookRef, {
+                                    ...book,
+                                    quantity: updatedQuantity
+                                });
+
+                                alert("Book Allocated Successfully!");
+                            } 
+                            else {
+                                alert("Book is currently unavailable.");
+                            }
+                            return;
+                        }
+                    }
+                }
+            });
+        }
+
+        var loanButton = document.querySelector("#loan_button");
+        loanButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            var bookName = document.getElementById('name').value;
+            loanBook(bookName);
+        });
+
+
     </script>
 </body>
 </html>
+
+
