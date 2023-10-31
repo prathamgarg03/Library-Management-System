@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Search</title>
+    <link rel="stylesheet" href="student_Search.css">
+</head>
+<body>
+    <header><h1>Find Books</h1></header>
+    
+    <section class="form">
+        <form action="" id="add_form">
+            <h2>Search Catalog</h2>
+            <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
+            <button id="add_button" type="button">Search</button>
+            <!-- Add the "Loan" button -->
+            <button id="loan_button" type="button">Loan</button>
+        </form>
+    </section>
+      
+  <section class="catalouge">
+        <table>
+            <table class="books">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Publisher</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="tableB">
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
+        </footer>
+    </body>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        const tableB = document.getElementById('tableB');
+
+        function loanBook(bookName) {
+            // Check if the book is available and allocate it to the student
+            const booksRef = ref(db, 'user');
+            get(booksRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const books = snapshot.val();
+                    for (const key in books) {
+                        const book = books[key];
+                        if (book.name === bookName) {
+                            if (book.quantity > 0) {
+                                // The book is available, allocate it to the student
+                                // You can update the quantity here
+                                const updatedQuantity = book.quantity - 1;
+
+                                // Update the database to allocate the book
+                                const bookRef = child(booksRef, key);
+                                set(bookRef, {
+                                    ...book,
+                                    quantity: updatedQuantity
+                                });
+
+                                // Display a success message or perform further actions
+                                alert("Book Allocated Successfully!");
+                            } else {
+                                // The book is not available
+                                alert("Book is currently unavailable.");
+                            }
+                            return;
+                        }
+                    }
+                    // If the loop completes and the book is not found
+                    alert("Book Not Found");
+                }
+            });
+        }
+
+        var loanButton = document.querySelector("#loan_button");
+        loanButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            var bookName = document.getElementById('name').value;
+            loanBook(bookName);
+        });
+    </script>
+</html>
