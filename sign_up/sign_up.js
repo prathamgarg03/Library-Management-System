@@ -1,8 +1,8 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 document.addEventListener("DOMContentLoaded", function () {
     init();
 });
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 function init(){
     document.getElementById('LoginButton').addEventListener('click',function(evt){
         var user_email = document.getElementById('sign_up_email').value;
