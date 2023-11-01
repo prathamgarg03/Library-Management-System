@@ -36,7 +36,7 @@
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
             import {
-                getFirestore, collection, getDocs, addDoc, query, where
+                getFirestore, collection, getDocs, addDoc, query, where,updateDoc
 
             } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
@@ -65,6 +65,7 @@
                     email: sign.sign_up_email.value,
                     name: sign.user_name.value,
                     password: sign.sign_up_password.value,
+                    flag: false,
                 })
                 .then(() => {
                     alert("Sign Up successful. You will be redirected to the login page");

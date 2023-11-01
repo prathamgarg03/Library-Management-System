@@ -30,9 +30,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
         import {
-            getFirestore, collection, getDocs, addDoc, query, where
+            getFirestore, collection, getDocs, addDoc, query, where, updateDoc, doc
 
         } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -43,6 +44,7 @@
             appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore();
         const colRef = collection(db, 'student')
@@ -59,8 +61,17 @@
             const userExists = querySnapshot.docs.some(doc => doc.data().password === passwordInput.value);
 
             if (userExists) {
-                const path = '../studentHome/studentHome.html';
-                window.open(path, "_self");
+                const userDoc = querySnapshot.docs.find(doc => doc.data().password === passwordInput.value);
+                const userRef = doc(db, 'student', userDoc.id);
+
+                await updateDoc(userRef, {
+                    flag: true,
+                })
+                    .then(() => {
+                        const path = '../studentHome/studentHome.html';
+                        window.open(path, "_self");
+                    })
+
             } else {
                 alert("User does not exist or password is incorrect.");
                 loginform.reset();
