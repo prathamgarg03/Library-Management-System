@@ -23,7 +23,6 @@
                 Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required><br>
                 <button type="button" id="add_button">Add</button>
                 <button type="button" id="remove_button">Remove</button>
-                <button type="button" id="clear_field"> Reset</button>
             </form>
         </section>
         <section class="catalouge">
@@ -102,13 +101,8 @@
                     alert("Book Added Successfully");
                     displayBooks();
                 });
+                document.getElementById("add_form").reset();
             }
-        });
-        document.getElementById("clear_field").addEventListener('click',function(){
-            document.getElementById("name").value ="";
-            document.getElementById("quantity").value ="";
-            document.getElementById("publisher").value ="";
-            document.getElementById("author").value ="";
         });
         function removeBook(bookName) {
             // Check if the book is available and allocate it to the student
@@ -133,11 +127,13 @@
                                         const bookRef = child(booksRef, key);
                                         set(bookRef, null).then(() => {
                                             alert("Book Removed Successfully");
+                                            document.getElementById("add_form").reset();
                                         }).catch((error) => {
                                             console.error("Error removing book:", error);
                                         });
                                     } else {
                                         alert("Book Updated Successfully");
+                                        document.getElementById("add_form").reset();
                                     }
                                     displayBooks();
                                 }).catch((error) => {
@@ -145,6 +141,7 @@
                                 });
                             } else {
                                 alert("Book is currently unavailable.");
+                                document.getElementById("add_form").reset();
                             }
                             return;
                         }
