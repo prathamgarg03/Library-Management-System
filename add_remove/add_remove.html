@@ -113,7 +113,7 @@
                     for (const key in books) {
                         const book = books[key];
                         if (book.name === bookName) {
-                            if (book.quantity > parseFloat(document.getElementById("quantity").value)) {
+                            if (book.quantity < parseFloat(document.getElementById("quantity").value)) {
                                 window.alert(book.quantity + ", " + parseFloat(document.getElementById("quantity").value) + "Quantity mentioned is more than the book in stock");
                             } else if (book.quantity > 0) {
                                 const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
