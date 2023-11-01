@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="../admin_sign_up/admin_sign_up.css">
+</head>
+
+<body>
+    <header>
+        <h1>
+            Library Management System
+        </h1>
+    </header>
+    <main>
+        <section id="sign_up">
+            <form action="" class="login" id="signForm">
+                <h2>Admin Sign Up</h2>
+                <img src="../photos/email.png" alt="email"><input type="email" name="sign_up_email" id="sign_up_email"
+                    placeholder="Enter Email address" required> <br>
+                <img src="../photos/name.jpg" alt="name"><input type="text" name="user_name" id="user_name" placeholder=" Enter your Full name" required> <br>
+                <img src="../photos/password.png" alt="password"><input type="password" name="sign_up_password"
+                    id="sign_up_password" placeholder="Create password" required> <br>
+                <img src="../photos/password_confirm.png" alt="password_confirm"><input type="text"
+                    name="password_confrim" id="password_confirm" placeholder="Confirm password" required> <br>
+                <button type="submit" id="SignUp"> Sign Up </button><br>
+            </form>
+            Are You an Admin? <a href="../adminLogin/adminLogin.html">Click Here</a>&nbsp &nbsp
+            Are You a Student? <a href="../studentLogin/studentLogin.html">Click Here</a>
+        </section>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+            import {
+                getFirestore, collection, getDocs, addDoc, query, where
+
+            } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+                authDomain: "lms1-2fdcb.firebaseapp.com",
+                projectId: "lms1-2fdcb",
+                storageBucket: "lms1-2fdcb.appspot.com",
+                messagingSenderId: "952940918932",
+                appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore();
+            const colRef = collection(db, 'admin');
+
+            const sign = document.getElementById('signForm');
+            document.getElementById('SignUp').addEventListener('click', function (evt) {
+                if(sign.sign_up_password.value !== sign.password_confirm.value) {
+                    alert("Make sure both the passwords match!");
+                    sign.reset();
+                    return;
+                }
+                evt.preventDefault();
+                addDoc(colRef, {
+                    email: sign.sign_up_email.value,
+                    name: sign.user_name.value,
+                    password: sign.sign_up_password.value,
+                    flag: false,
+                })
+                .then(() => {
+                    alert("Sign Up successful. You will be redirected to the login page");
+                    const path = '../adminLogin/adminLogin.html';
+                    window.open(path, "_self");
+                })
+            })
+        </script>
+    </main>
+
+</body>
+
+</html>

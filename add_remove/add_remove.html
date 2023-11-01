@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="add_remove.css">
-    <script src="add_remove.js" defer> </script>
+    <script src="add_remove.js" defer></script>
     <title>Add Books</title>
 </head>
 
@@ -21,25 +21,24 @@
                 Author: <input id="author" type="text" placeholder="Enter author name" required> <br>
                 Publisher: <input id="publisher" type="text" placeholder="Enter publisher name" required> <br>
                 Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required><br>
-                <button type="submit" id="add_button">Add</button>
-                <button type="submit" id="remove_button">Remove</button>
+                <button type="button" id="add_button">Add</button>
+                <button type="button" id="remove_button">Remove</button>
             </form>
         </section>
         <section class="catalouge">
-            <h2>Catalouge</h2>
-            <table>
-                <table class="books">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Author</th>
-                            <th>Publisher</th>
-                            <th>Quantity</th>
-                        </tr>
-                    </thead>
-                    <tbody id='tableB'>
-                    </tbody>
-                </table>
+            <h2>Catalogue</h2>
+            <table class="books">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Publisher</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id='tableB'>
+                </tbody>
+            </table>
         </section>
     </main>
     <footer>
@@ -68,18 +67,18 @@
 
         function displayBooks() {
             const booksRef = ref(db, 'user');
-            tableB.innerHTML="";
+            tableB.innerHTML = "";
             get(booksRef).then((snapshot) => {
                 if (snapshot.exists()) {
                     const books = snapshot.val();
                     for (const key in books) {
                         const book = books[key];
                         const row = `<tr>
-                                   <td>${book.name}</td>
-                                   <td>${book.author}</td>
-                                   <td>${book.publisher}</td>
-                                   <td>${book.quantity}</td>
-                               </tr>`;
+                            <td>${book.name}</td>
+                            <td>${book.author}</td>
+                            <td>${book.publisher}</td>
+                            <td>${book.quantity}</td>
+                        </tr>`;
                         tableB.innerHTML += row;
                     }
                 }
@@ -89,81 +88,77 @@
         // Call the function to display books when the page loads
         displayBooks();
 
-        document.getElementById("add_button").addEventListener('click', function (e) {
-            // e.preventDefault()
-            if(document.getElementById("name").value==""||document.getElementById("quantity").value==""||document.getElementById("publisher").value==""||document.getElementById("author").value=="")
-            {
-                window.alert("Error!! Please Fill in All the Details.")
+        document.getElementById("add_button").addEventListener('click', function () {
+            if (document.getElementById("name").value === "" || document.getElementById("quantity").value === "" || document.getElementById("publisher").value === "" || document.getElementById("author").value === "") {
+                window.alert("Error!! Please Fill in All the Details.");
+            } else {
+                set(ref(db, 'user/' + document.getElementById("name").value), {
+                    name: document.getElementById("name").value,
+                    author: document.getElementById("author").value,
+                    publisher: document.getElementById("publisher").value,
+                    quantity: document.getElementById("quantity").value
+                }).then(() => {
+                    alert("Book Added Successfully");
+                    displayBooks();
+                });
+                document.getElementById("add_form").reset();
             }
-            else{
-            set(ref(db, 'user/' + document.getElementById("name").value), {
-                name: document.getElementById("name").value,
-                author: document.getElementById("author").value,
-                publisher: document.getElementById("publisher").value,
-                quantity: document.getElementById("quantity").value
-            });
-            alert("Book Added Successfully");
-        }});
-
-            // e.preventDefault();
-            function removeBook(bookName) {
-                // Check if the book is available and allocate it to the student
-                const booksRef = ref(db, 'user');
-                get(booksRef).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const books = snapshot.val();
-                        for (const key in books) {
-                            const book = books[key];
-                            if (book.name === bookName) {
-                                if(book.quantity > parseFloat(document.getElementById("quantity").value))
-                                {
-                                    window.alert("Quantity mentioned is more than the book in stock ");
-                                }
-                                else if (book.quantity > 0) {
-                                    const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
-                                    const bookRef = child(booksRef, key);
-                                    set(bookRef, {
-                                        ...book,
-                                        quantity: updatedQuantity
-                                    });
-                                    
-                                if (updatedQuantity === 0) 
-                                {
-                                    // Remove the book entry from the database
-                                    const bookRef = child(booksRef, key);
-                                    set(bookRef, null)
-                                        .then(() => {
-                                            alert("Book Removed Successfully!");
-                                            displayBooks();
-                                        })
-                                        .catch((error) => {
+        });
+        function removeBook(bookName) {
+            // Check if the book is available and allocate it to the student
+            const booksRef = ref(db, 'user');
+            get(booksRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const books = snapshot.val();
+                    for (const key in books) {
+                        const book = books[key];
+                        if (book.name === bookName) {
+                            if (book.quantity < parseFloat(document.getElementById("quantity").value)) {
+                                window.alert("Quantity mentioned is more than the book in stock");
+                            } else if (book.quantity > 0) {
+                                const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
+                                const bookRef = child(booksRef, key);
+                                set(bookRef, {
+                                    ...book,
+                                    quantity: updatedQuantity
+                                }).then(() => {
+                                    if (updatedQuantity === 0) {
+                                        // Only remove the book if quantity is now 0
+                                        const bookRef = child(booksRef, key);
+                                        set(bookRef, null).then(() => {
+                                            alert("Book Removed Successfully");
+                                            document.getElementById("add_form").reset();
+                                        }).catch((error) => {
                                             console.error("Error removing book:", error);
-                                });
-                                    
-                                    alert("Book Removed Successfully!");
+                                        });
+                                    } else {
+                                        alert("Book Removed Successfully");
+                                        document.getElementById("add_form").reset();
+                                    }
                                     displayBooks();
-                                }
-                                else {
-                                    alert("Book is currently unavailable.");
-                                }
-                                return;
+                                }).catch((error) => {
+                                    console.error("Error updating book:", error);
+                                });
+                            } else {
+                                alert("Book is currently unavailable.");
+                                document.getElementById("add_form").reset();
                             }
+                            return;
                         }
                     }
-                });
-            }
+                }
+            });
+        }
 
-            var removeButton = document.querySelector("#remove_button");
-            removeButton.addEventListener('click', function (e) {
-                if(document.getElementById("quantity").value=="")
-                {
-                    window.alert("Please Fill The Quantity.")
-                }    
-
-                e.preventDefault();
+        var removeButton = document.querySelector("#remove_button");
+        removeButton.addEventListener('click', function () {
+            if (document.getElementById("quantity").value === "") {
+                window.alert("Please Fill The Quantity.");
+            } else {
                 var bookName = document.getElementById('name').value;
                 removeBook(bookName);
-            });
+            }
+        });
     </script>
 </body>
 
