@@ -64,8 +64,15 @@
                         email: user_email,
                         sid: user_sid,
                         password: user_pass
+                    }).then(()=>{
+                        alert("Your signup is complete!!");
+                    }).then(()=>{
+                        document.getElementById('sign_up_email').value ='';
+                        document.getElementById('user_name').value='';
+                        document.getElementById('student_id').value='';
+                        document.getElementById('sign_up_password').value ='';
+                        document.getElementById('password_confirm').value='';
                     });
-                    alert("Your sign up is complete");
                 });
             }
         </script>
