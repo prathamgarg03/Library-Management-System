@@ -127,10 +127,11 @@
                                         quantity: updatedQuantity
                                     });
                                     
-                                    if(updatedQuantity=="0")
-                                    {
-                                    //CODE TO BE WRITTEN
-                                    }
+                                if(updatedQuantity=="0")
+                                {
+                                    const booksRef = ref(db, 'user');
+                                    booksRef.delete()
+                                }
                                     
                                     alert("Book Removed Successfully!");
                                     displayBooks();
