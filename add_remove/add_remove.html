@@ -127,11 +127,18 @@
                                         quantity: updatedQuantity
                                     });
                                     
-                                if(updatedQuantity=="0")
+                                if (updatedQuantity === 0) 
                                 {
-                                    const booksRef = ref(db, 'user');
-                                    booksRef.delete()
-                                }
+                                    // Remove the book entry from the database
+                                    const bookRef = child(booksRef, key);
+                                    set(bookRef, null)
+                                        .then(() => {
+                                            alert("Book Removed Successfully!");
+                                            displayBooks();
+                                        })
+                                        .catch((error) => {
+                                            console.error("Error removing book:", error);
+                                });
                                     
                                     alert("Book Removed Successfully!");
                                     displayBooks();
