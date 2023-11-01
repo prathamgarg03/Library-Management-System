@@ -34,7 +34,6 @@
 
         } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
             authDomain: "lms1-2fdcb.firebaseapp.com",
@@ -44,7 +43,6 @@
             appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore();
         const colRef = collection(db, 'student')
@@ -65,7 +63,7 @@
                 window.open(path, "_self");
             } else {
                 alert("User does not exist or password is incorrect.");
-                // loginform.reset();
+                loginform.reset();
             }
         });
     </script>

@@ -12,7 +12,7 @@
     </header>
     <main>
         <section id="admin_login">
-            <form action="#" class="login">
+            <form action="#" class="login" id="adminLogin">
                 <h2>Admin Login</h2>
                 <img src="../photos/email.png" alt="email"><input type="text" name="admin_username" id="admin_username" placeholder="Enter username" required> <br>
                 <img src="../photos/password.png" alt="password"><input type="password" name="admin_password" id="admin_password" placeholder="Enter password" required> <br>
@@ -22,6 +22,45 @@
             Create an account? <a href="../admin_sign_up/admin_sign_up.html">Click Here</a>
         </section>
     </main>
-    <script src="adminLogin.js" defer> </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import {
+            getFirestore, collection, getDocs, addDoc, query, where
+
+        } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const colRef = collection(db, 'admin')
+
+        const loginform = document.getElementById('adminLogin');
+        const usernameInput = document.getElementById('admin_username');
+        const passwordInput = document.getElementById('admin_password');
+
+        document.getElementById("LoginButton").addEventListener('click', async function (e) {
+            e.preventDefault();
+            const q = query(colRef, where("email", "==", usernameInput.value));
+
+            const querySnapshot = await getDocs(q);
+            const userExists = querySnapshot.docs.some(doc => doc.data().password === passwordInput.value);
+
+            if (userExists) {
+                const path = '../adminHome/adminHome.html';
+                window.open(path, "_self");
+            } else {
+                alert("User does not exist or password is incorrect.");
+                loginform.reset();
+            }
+        });
+    </script>
 </body>
 </html>
