@@ -14,23 +14,20 @@
             <h2>Loans</h2>
             <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
             <button id="add_button" type="button">Search</button>
-            <button id="loan_button" type="button">Loan</button>
         </form>
     </section>
     
-    <!-- Add a new section for displaying loaned books -->
     <section class="loaned-books">
         <h2>Loaned Books</h2>
         <table class="books">
             <thead>
                 <tr>
-                    <th>Name</th>
+                    <th>Book Name</th>
                     <th>Author</th>
                     <th>Publisher</th>
-                    <th>Quantity</th>
                 </tr>
             </thead>
-            <tbody id="loanedTable">
+            <tbody id="tableB">
             </tbody>
         </table>
     </section>
@@ -55,66 +52,44 @@
     const db = getDatabase(app);
     
     const tableB = document.getElementById('tableB');
-    const loanedTable = document.getElementById('loanedTable');
 
-    function loanBook(bookName) {
-        // Check if the book is available and allocate it to the student
-        const booksRef = ref(db, 'user');
-        get(booksRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const books = snapshot.val();
-                for (const key in books) {
-                    const book = books[key];
-                    if (book.name === bookName) {
-                        if (book.quantity > 0) {
-                            // The book is available, allocate it to the student
-                            // You can update the quantity here
-                            const updatedQuantity = book.quantity - 1;
-
-                            // Update the database to allocate the book
-                            const bookRef = child(booksRef, key);
-                            set(bookRef, {
-                                ...book,
-                                quantity: updatedQuantity
-                            });
-
-                            // Display a success message or perform further actions
-                            alert("Book Allocated Successfully!");
-
-                            // Add the allocated book to the loaned books table
-                            addToLoanedBooksTable(book);
-
-                        } else {
-                            // The book is not available
-                            alert("Book is currently unavailable.");
+    function displayBooks(temp) {
+            tableB.innerHTML = "";
+            const booksRef = ref(db, 'loan_table');
+            get(booksRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const books = snapshot.val();
+                    for (const key in books) {
+                        const book = books[key];
+                        if (temp.sub) { //get id here and match
+                            const row = `<tr>
+                                    <td>${book.name}</td>
+                                    <td>${book.author}</td>
+                                    <td>${book.publisher}</td>
+                                    </tr>`;
+                            tableB.innerHTML += row;
                         }
-                        return;
+                        
                     }
                 }
-                // If the loop completes and the book is not found
-                alert("Book Not Found");
-            }
+            });
+            
+        }
+
+        var buttonx = document.querySelector("#add_button");
+        //var temp = document.getElementById('name').value;
+        buttonx.addEventListener('click', function(e) {
+            e.preventDefault();
+            var temp = document.getElementById('name').value; //send id here not name of
+            displayBooks(temp);
         });
-    }
 
-    function addToLoanedBooksTable(book) {
-        const row = `
-            <tr>
-                <td>${book.name}</td>
-                <td>${book.author}</td>
-                <td>${book.publisher}</td>
-                <td>${book.quantity}</td>
-            </tr>
-        `;
-        loanedTable.innerHTML += row;
-    }
+    // var search_button = document.querySelector("#add_button");
+    // search_button.addEventListener('click', function(e) {
+    //     //e.preventDefault();
+    //     displayBooks();
 
-    var loanButton = document.querySelector("#loan_button");
-    loanButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        var bookName = document.getElementById('name').value;
-        loanBook(bookName);
-    });
+    // });
 </script>
 </html>
 

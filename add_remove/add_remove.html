@@ -20,12 +20,12 @@
                 Name: <input id="name" type="text" placeholder="Enter book name" required> <br>
                 Author: <input id="author" type="text" placeholder="Enter author name" required> <br>
                 Publisher: <input id="publisher" type="text" placeholder="Enter publisher name" required> <br>
-                Quantity: <input id="quantity" type="number" placeholder="Enter quantity" required><br>
+                Quantity: <input id="quantity" type="text" placeholder="Enter quantity" required><br>
                 <button type="button" id="add_button">Add</button>
                 <button type="button" id="remove_button">Remove</button>
             </form>
         </section>
-        <section class="catalogue">
+        <section class="catalouge">
             <h2>Catalogue</h2>
             <table class="books">
                 <thead>
@@ -47,16 +47,16 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child, remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
 
         // Initialize Firebase
@@ -89,71 +89,74 @@
         displayBooks();
 
         document.getElementById("add_button").addEventListener('click', function () {
-            const name = document.getElementById("name").value;
-            const author = document.getElementById("author").value;
-            const publisher = document.getElementById("publisher").value;
-            const quantity = parseInt(document.getElementById("quantity").value);
-
-            if (!name || !author || !publisher || isNaN(quantity) || quantity <= 0) {
-                window.alert("Error!! Please Fill in All the Details and Provide a Valid Quantity.");
+            if (document.getElementById("name").value === "" || document.getElementById("quantity").value === "" || document.getElementById("publisher").value === "" || document.getElementById("author").value === "") {
+                window.alert("Error!! Please Fill in All the Details.");
             } else {
-                set(ref(db, 'user/' + name), {
-                    name: name,
-                    author: author,
-                    publisher: publisher,
-                    quantity: quantity
+                set(ref(db, 'user/' + document.getElementById("name").value), {
+                    name: document.getElementById("name").value,
+                    author: document.getElementById("author").value,
+                    publisher: document.getElementById("publisher").value,
+                    quantity: document.getElementById("quantity").value
                 }).then(() => {
                     alert("Book Added Successfully");
                     displayBooks();
-                }).catch((error) => {
-                    console.error("Error adding book:", error);
                 });
             }
         });
 
+        function removeBook(bookName) {
+            // Check if the book is available and allocate it to the student
+            const booksRef = ref(db, 'user');
+            get(booksRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const books = snapshot.val();
+                    for (const key in books) {
+                        const book = books[key];
+                        if (book.name === bookName) {
+                            if (book.quantity < parseFloat(document.getElementById("quantity").value)) {
+                                window.alert("Quantity mentioned is more than the book in stock");
+                            } else if (book.quantity > 0) {
+                                const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
+                                const bookRef = child(booksRef, key);
+                                set(bookRef, {
+                                    ...book,
+                                    quantity: updatedQuantity
+                                }).then(() => {
+                                    if (updatedQuantity === 0) {
+                                        // Only remove the book if quantity is now 0
+                                        const bookRef = child(booksRef, key);
+                                        set(bookRef, null).then(() => {
+                                            alert("Book Removed Successfully");
+                                        }).catch((error) => {
+                                            console.error("Error removing book:", error);
+                                        });
+                                    } else {
+                                        alert("Book Updated Successfully");
+                                    }
+                                    displayBooks();
+                                }).catch((error) => {
+                                    console.error("Error updating book:", error);
+                                });
+                            } else {
+                                alert("Book is currently unavailable.");
+                            }
+                            return;
+                        }
+                    }
+                }
+            });
+        }
+
         var removeButton = document.querySelector("#remove_button");
         removeButton.addEventListener('click', function () {
-            const name = document.getElementById("name").value;
-            const quantityToRemove = parseInt(document.getElementById("quantity").value);
-
-            if (!name || isNaN(quantityToRemove) || quantityToRemove <= 0) {
-                window.alert("Please Fill The Book Name and Provide a Valid Quantity.");
+            if (document.getElementById("quantity").value === "") {
+                window.alert("Please Fill The Quantity.");
             } else {
-                const bookRef = ref(db, 'user/' + name);
-                get(bookRef).then((snapshot) => {
-                    const book = snapshot.val();
-                    if (book && book.quantity >= quantityToRemove) {
-                        const updatedQuantity = book.quantity - quantityToRemove;
-                        if (updatedQuantity === 0) {
-                            // Remove the book if quantity is now 0
-                            remove(bookRef).then(() => {
-                                alert("Book Removed Successfully");
-                                displayBooks();
-                            }).catch((error) => {
-                                console.error("Error removing book:", error);
-                            });
-                        } else {
-                            // Update the quantity
-                            set(bookRef, {
-                                ...book,
-                                quantity: updatedQuantity
-                            }).then(() => {
-                                alert("Book Updated Successfully");
-                                displayBooks();
-                            }).catch((error) => {
-                                console.error("Error updating book:", error);
-                            });
-                        }
-                    } else {
-                        alert("Invalid Quantity or Book Not Found.");
-                    }
-                }).catch((error) => {
-                    console.error("Error getting book:", error);
-                });
+                var bookName = document.getElementById('name').value;
+                removeBook(bookName);
             }
         });
     </script>
 </body>
 
 </html>
-
