@@ -12,6 +12,7 @@
     <header>
         <h1>Student Home</h1>
         <a href="#" id="log_out"> Log out</a>
+        <div id="studentIdDisplay"></div>
     </header>
     <main>
         <section>
@@ -46,6 +47,9 @@
         const db = getFirestore();
         const colRef = collection(db, 'student');
         const studentQuery = query(colRef);
+
+        const studentId = sessionStorage.getItem("studentId");
+    document.getElementById("studentIdDisplay").textContent = "Student ID: " + studentId;
 
         const button1 = document.querySelector("#searchButton");
         button1.onclick = goToSearchPage;

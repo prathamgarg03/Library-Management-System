@@ -68,7 +68,10 @@
                     flag: true,
                 })
                     .then(() => {
-                        const path = '../studentHome/studentHome.html';
+                        const studentId = querySnapshot.docs[0].id; // Get the student's ID
+                        sessionStorage.setItem("studentId", studentId);
+
+                        const path = '../studentHome/studentHome.html?studentId=${s_id}}';
                         window.open(path, "_self");
                     })
 
