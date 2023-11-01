@@ -49,3 +49,7 @@ footer>a:hover
 {
     color:coral;
 }
+#log_out{
+    color:red;
+    margin-left: 90vw;
+}

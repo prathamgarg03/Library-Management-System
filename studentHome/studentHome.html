@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="studentHome.css">
     <title>Student Home</title>
 </head>
+
 <body>
     <header>
         <h1>Student Home</h1>
+        <a href="#" id="log_out"> Log out</a>
     </header>
     <main>
         <section>
-            <input class="btn" type="submit" value=" Search " id = "searchButton">
-            <input class="btn" type="submit" value=" Loans " id ="loan_button">
+            <input class="btn" type="submit" value=" Search " id="searchButton">
+            <input class="btn" type="submit" value=" Loans " id="loan_button">
             <input class="btn" type="submit" value=" Requests ">
             <input class="btn" type="submit" value=" Fines ">
         </section>
@@ -21,6 +24,66 @@
     <footer>
         <a href="../adminLogin/adminLogin.html">&lt Back To Home Page</a>
     </footer>
-    <script src="studentHome.js" defer> </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import {
+            getFirestore, collection, query, getDocs, where, updateDoc, doc, setDoc, addDoc
+
+        } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const colRef = collection(db, 'student');
+        const studentQuery = query(colRef);
+
+        const button1 = document.querySelector("#searchButton");
+        button1.onclick = goToSearchPage;
+
+        function goToSearchPage() {
+            const path = "../student_search/student_Search.html";
+            window.open(path, "_self");
+        }
+
+        let loan = document.getElementById("loan_button");
+        function goToLoansPage() {
+            const path = "../Student_loan/Student_loan.html";
+            window.open(path, "_self");
+        }
+
+        loan.onclick = goToLoansPage;
+
+        document.getElementById("log_out").addEventListener('click', function (evt) {
+            getDocs(studentQuery).then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    // Step 3: Update the 'flag' field to true for each student
+                    const studentRef = doc.ref;
+                    const data = { flag: false };
+
+                    // Step 4: Update the document with the new data
+                    updateDoc(studentRef, data)
+                        .then(() => {
+                            console.log("Document successfully updated!");
+                            window.open("../studentLogin/studentLogin.html","_self")
+                        })
+                        .catch((error) => {
+                            console.error("Error updating document: ", error);
+                        });
+                });
+            });
+
+        })
+    </script>
 </body>
+
 </html>
