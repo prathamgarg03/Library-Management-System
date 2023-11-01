@@ -101,9 +101,9 @@
                     alert("Book Added Successfully");
                     displayBooks();
                 });
+                document.getElementById("add_form").reset();
             }
         });
-
         function removeBook(bookName) {
             // Check if the book is available and allocate it to the student
             const booksRef = ref(db, 'user');
@@ -127,11 +127,13 @@
                                         const bookRef = child(booksRef, key);
                                         set(bookRef, null).then(() => {
                                             alert("Book Removed Successfully");
+                                            document.getElementById("add_form").reset();
                                         }).catch((error) => {
                                             console.error("Error removing book:", error);
                                         });
                                     } else {
-                                        alert("Book Updated Successfully");
+                                        alert("Book Removed Successfully");
+                                        document.getElementById("add_form").reset();
                                     }
                                     displayBooks();
                                 }).catch((error) => {
@@ -139,6 +141,7 @@
                                 });
                             } else {
                                 alert("Book is currently unavailable.");
+                                document.getElementById("add_form").reset();
                             }
                             return;
                         }
