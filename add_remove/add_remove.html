@@ -127,14 +127,14 @@
                                         const bookRef = child(booksRef, key);
                                         set(bookRef, null).then(() => {
                                             alert("Book Removed Successfully");
-                                            displayBooks();
+                                            //displayBooks();
                                         }).catch((error) => {
                                             console.error("Error removing book:", error);
                                         });
                                     } else {
                                         alert("Book Updated Successfully");
                                     }
-                                    displayBooks();
+                                    //displayBooks();
                                 }).catch((error) => {
                                     console.error("Error updating book:", error);
                                 });
