@@ -1,27 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="studentLogin.css">
-    <script src="studentLogin.js" defer></script>
+    <!-- <script src="studentLogin.js" defer></script> -->
     <title>Student Login Page</title>
 </head>
+
 <body>
     <header>
         <h1>Student Login Page</h1>
     </header>
     <main>
         <section id="student_login">
-            <form action="#">
+            <form action="" id="studentLogin">
                 <h2>Student Login</h2>
-                <img src="../photos/email.png" alt="email"><input type="text" name="student_username" id="student_username" placeholder="Enter username" required> <br>
-                <img src="../photos/password.png" alt="password"><input type="password" name="student_password" id="student_password" placeholder="Enter password" required>
+                <img src="../photos/email.png" alt="email"><input type="text" name="student_username"
+                    id="student_username" placeholder="Enter username" required> <br>
+                <img src="../photos/password.png" alt="password"><input type="password" name="student_password"
+                    id="student_password" placeholder="Enter password" required>
                 <button id="Studentloginbutton">Login</button>
             </form>
             Are you an Admin? <a href="../adminLogin/adminLogin.html">Click Here</a>&nbsp &nbsp
             Create an account? <a href="../sign_up/sign_up.html">Click Here</a>
         </section>
     </main>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+        import {
+            getFirestore, collection, getDocs, addDoc, query, where
+
+        } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+        const colRef = collection(db, 'student')
+
+        const loginform = document.getElementById('studentLogin');
+        const usernameInput = document.getElementById('student_username');
+        const passwordInput = document.getElementById('student_password');
+
+        document.getElementById("Studentloginbutton").addEventListener('click', async function (e) {
+            e.preventDefault();
+            const q = query(colRef, where("email", "==", usernameInput.value));
+
+            const querySnapshot = await getDocs(q);
+            const userExists = querySnapshot.docs.some(doc => doc.data().password === passwordInput.value);
+
+            if (userExists) {
+                const path = '../studentHome/studentHome.html';
+                window.open(path, "_self");
+            } else {
+                alert("User does not exist or password is incorrect.");
+                // loginform.reset();
+            }
+        });
+    </script>
 </body>
+
 </html>
