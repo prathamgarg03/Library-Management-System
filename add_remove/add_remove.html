@@ -91,6 +91,11 @@
 
         document.getElementById("add_button").addEventListener('click', function (e) {
             // e.preventDefault()
+            if(document.getElementById("name").value==""||document.getElementById("quantity").value==""||document.getElementById("publisher").value==""||document.getElementById("author").value=="")
+            {
+                window.alert("Error!! Please Fill in All the Details.")
+            }
+            else{
             set(ref(db, 'user/' + document.getElementById("name").value), {
                 name: document.getElementById("name").value,
                 author: document.getElementById("author").value,
@@ -98,7 +103,7 @@
                 quantity: document.getElementById("quantity").value
             });
             alert("Book Added Successfully");
-        });
+        }});
 
             // e.preventDefault();
             function removeBook(bookName) {
@@ -110,14 +115,23 @@
                         for (const key in books) {
                             const book = books[key];
                             if (book.name === bookName) {
-                                if (book.quantity > 0) {
+                                if(book.quantity > parseFloat(document.getElementById("quantity").value))
+                                {
+                                    window.alert("Quantity mentioned is more than the book in stock ");
+                                }
+                                else if (book.quantity > 0) {
                                     const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
                                     const bookRef = child(booksRef, key);
                                     set(bookRef, {
                                         ...book,
                                         quantity: updatedQuantity
                                     });
-
+                                    
+                                    if(updatedQuantity=="0")
+                                    {
+                                    //CODE TO BE WRITTEN
+                                    }
+                                    
                                     alert("Book Removed Successfully!");
                                     displayBooks();
                                 }
