@@ -1,5 +1,5 @@
 # [CMPT 276]  Library-Management-System  
-Project Abstract:  
+Project Abstract:<br>
 This project aims to develop an advanced Library Management System (LMS) designed to streamline the efficient management of books, patrons, and loans within libraries. It is ensured that the system will remain adaptable to changing library needs by utilizing Agile methodologies. The LMS will facilitate book cataloging, patron record management, loan management with automated reminders, a user-friendly search and discovery interface, and reporting and analytics capabilities for data-driven decision-making. Ultimately, this project aims to modernize library operations by automating and enhancing various aspects of library management while ensuring flexibility and responsiveness to evolving library requirements.  
 Website Link:  
 https://prathamgarg03.github.io/Library-Management-System-CMPT-276-/adminLogin/a dminLogin.html  
