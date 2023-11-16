@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Search</title>
     <link rel="stylesheet" href="student_Search.css">
 </head>
+
 <body>
-    <header><h1>Find Books</h1></header>
-    
+    <header>
+        <h1>Find Books</h1>
+        <div id="studentIdDisplay"></div>
+    </header>
+
     <section class="form">
         <form action="" id="add_form">
-                <h2>Search Catalouge</h2>
-                <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
-                <button id = "add_button" type="button">Search</button>
-                <button id="loan_button" type="button">Loan</button>
+            <h2>Search Catalouge</h2>
+            <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
+            <button id="add_button" type="button">Search</button>
+            <button id="loan_button" type="button">Loan</button>
         </form>
     </section>
-    
+
     <section class="catalouge">
-        <table>
-            <table class="books">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Author</th>
-                        <th>Publisher</th>
-                        <th>Quantity</th>
-                    
-                    </tr>
-                </thead>
-                <tbody id = 'tableB'>
-                </tbody>
+        <table class="books">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Author</th>
+                    <th>Publisher</th>
+                    <th>Quantity</th>
+
+                </tr>
+            </thead>
+            <tbody id='tableB'>
+            </tbody>
         </table>
     </section>
-      <footer>
+    <footer>
         <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
     </footer>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, FieldValue } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -50,42 +55,58 @@
             appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        
+
+        const auth = getAuth(app);
+        const user = auth.currentUser;
+
+        const fire_db = getFirestore(app);
+        const bookDocumentRef = collection(fire_db, 'books');
+        const loanRef = collection(fire_db, 'loan');
+
+        let user_id = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById("studentIdDisplay").textContent = user.email;
+                user_id = user.uid;
+                // ...
+            } else {
+                // User is signed out
+                console.log('no log in')
+                // ...
+            }
+        });
         const tableB = document.getElementById('tableB');
 
-        function displayBooks(temp) {
-            var flag = false;
-            tableB.innerHTML = "";
-            const booksRef = ref(db, 'user');
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        if (book.name === temp) {
-                            flag = true;
-                            const row = `<tr>
-                                    <td>${book.name}</td>
-                                    <td>${book.author}</td>
-                                    <td>${book.publisher}</td>
-                                    <td>${book.quantity}</td>
-                                    </tr>`;
-                            tableB.innerHTML += row;
-                        }
-                        
-                    }
-                }
-                if(!flag) {
-                alert("Book Not Found");
-            }
-            });
-            
-        }
+        async function displayBooks(temp) {
+            try {
+                const querySnapshot = await getDocs(bookDocumentRef);
+                var flag = false
+                tableB.innerHTML = "";
 
+                querySnapshot.forEach((doc) => {
+                    const book = doc.data();
+                    if (book.name === temp) {
+                        flag = true
+                        const row = `<tr>
+                                        <td>${book.name}</td>
+                                        <td>${book.author}</td>
+                                        <td>${book.publisher}</td>
+                                        <td>${book.quantity}</td>
+                                    </tr>`;
+                        tableB.innerHTML += row;
+                    }
+                });
+                if (!flag) {
+                    alert('Book Not Found!');
+                }
+            } catch (error) {
+                console.error("Error displaying books:", error);
+            }
+        }
         var buttonx = document.querySelector("#add_button");
-        //var temp = document.getElementById('name').value;
-        buttonx.addEventListener('click', function(e) {
+
+        buttonx.addEventListener('click', function (e) {
             e.preventDefault();
             var temp = document.getElementById('name').value;
             displayBooks(temp);
@@ -93,52 +114,68 @@
 
         var Enter_key = document.getElementById('name');
         Enter_key.addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    var temp = document.getElementById('name').value;
-                    displayBooks(temp);
-                }
-            });
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                var temp = document.getElementById('name').value;
+                displayBooks(temp);
+            }
+        });
 
-        function loanBook(bookName) {
-            // Check if the book is available and allocate it to the student
-            const booksRef = ref(db, 'user');
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        if (book.name === bookName) {
-                            if (book.quantity > 0) {
-                                const updatedQuantity = book.quantity - 1;
-                                const bookRef = child(booksRef, key);
-                                set(bookRef, {
-                                    ...book,
-                                    quantity: updatedQuantity
-                                });
+        // console.log(user_id)
+        async function loanBook(bookName) {
+            try {
+                const q = query(bookDocumentRef, where('name', '==', bookName));
+                const querySnapshot = await getDocs(q);
+                const patron = doc(fire_db, 'student', user_id)
+                const timestamp = serverTimestamp()
+                // console.log(ff)
+                querySnapshot.forEach(async (doc) => {
+                    const book = doc.data();
 
-                                alert("Book Allocated Successfully!");
-                            } 
-                            else {
-                                alert("Book is currently unavailable.");
-                            }
-                            return;
-                        }
+                    if (book.quantity > 0) {
+
+                        const updatedQuantity = book.quantity - 1;
+                        // console.log(user_id)
+
+                        const bookInfo = {
+                            bookId: doc.id,
+                            bookName: book.name,
+                            timestamp: (new Date()).toISOString(),
+                        };
+                        const temp = await updateDoc(patron, {
+                            books_issued: arrayUnion(bookInfo)
+                        })
+                        const loanData = {
+                            bookId: doc.id,
+                            bookName: book.name,
+                            studentId: user_id,
+                            timestamp: (new Date()).toISOString()
+                        };
+                        await addDoc(loanRef, loanData);
+                            const bookDocRef = doc.ref;
+                            await updateDoc(bookDocRef, { quantity: updatedQuantity });
+                            alert("Book Allocated Successfully!");
+                            displayBooks(bookName);
+
+                    } else {
+                        alert("Book is currently unavailable.");
                     }
-                }
-            });
+                });
+            } catch (error) {
+                console.error("Error loaning book:", error);
+            }
         }
 
         var loanButton = document.querySelector("#loan_button");
-        loanButton.addEventListener('click', function(e) {
+        loanButton.addEventListener('click', function (e) {
             e.preventDefault();
             var bookName = document.getElementById('name').value;
             loanBook(bookName);
+
         });
 
 
     </script>
 </body>
+
 </html>
-
-

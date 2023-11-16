@@ -21,19 +21,16 @@
                     id="student_username" placeholder="Enter username" required> <br>
                 <img src="../photos/password.png" alt="password"><input type="password" name="student_password"
                     id="student_password" placeholder="Enter password" required>
-                <button id="Studentloginbutton">Login</button>
+                <button type="submit" id="Studentloginbutton">Login</button>
             </form>
             Are you an Admin? <a href="../adminLogin/adminLogin.html">Click Here</a>&nbsp &nbsp
             Create an account? <a href="../sign_up/sign_up.html">Click Here</a>
         </section>
     </main>
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import {
-            getFirestore, collection, getDocs, addDoc, query, where, updateDoc, doc
-
-        } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
-
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -44,40 +41,48 @@
             appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore();
-        const colRef = collection(db, 'student')
+
+        const auth = getAuth(app);
+
+        const db = getFirestore(app);
+        const colRef = collection(db, 'student');
 
         const loginform = document.getElementById('studentLogin');
-        const usernameInput = document.getElementById('student_username');
-        const passwordInput = document.getElementById('student_password');
 
-        document.getElementById("Studentloginbutton").addEventListener('click', async function (e) {
-            e.preventDefault();
-            const q = query(colRef, where("email", "==", usernameInput.value));
+        loginform.addEventListener('submit', async (e) => {
+            e.preventDefault()
 
-            const querySnapshot = await getDocs(q);
-            const userExists = querySnapshot.docs.some(doc => doc.data().password === passwordInput.value);
+            const userQuery = query(colRef, where('email', '==', loginform.student_username.value))
+            const querySnapshot = await getDocs(userQuery)
 
-            if (userExists) {
-                const userDoc = querySnapshot.docs.find(doc => doc.data().password === passwordInput.value);
-                const userRef = doc(db, 'student', userDoc.id);
-
-                await updateDoc(userRef, {
-                    flag: true,
-                })
-                    .then(() => {
-                        const studentId = querySnapshot.docs[0].id; // Get the student's ID
-                        sessionStorage.setItem("studentId", studentId);
-
-                        const path = '../studentHome/studentHome.html?studentId=${s_id}}';
-                        window.open(path, "_self");
+            if (!querySnapshot.empty) {
+                signInWithEmailAndPassword(auth, loginform.student_username.value, loginform.student_password.value)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        loginform.reset();
+                        alert("login successful");
+                        window.open('../studentHome/studentHome.html', '_self');
                     })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(errorCode + " " + errorMessage);
+                    })
+            }
+        })
 
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/auth.user
+                const uid = user.email;
+                console.log(uid);
+                // ...
             } else {
-                alert("User does not exist or password is incorrect.");
-                loginform.reset();
+                // User is signed out
+                console.log('no log in')
+                // ...
             }
         });
     </script>

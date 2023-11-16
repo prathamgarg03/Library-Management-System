@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="add_remove.css">
-    <script src="add_remove.js" defer></script>
     <title>Add Books</title>
 </head>
 
@@ -46,13 +45,14 @@
     </footer>
     <script type="module">
         // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
             authDomain: "lms1-2fdcb.firebaseapp.com",
+            databaseURL: "https://lms1-2fdcb-default-rtdb.firebaseio.com",
             projectId: "lms1-2fdcb",
             storageBucket: "lms1-2fdcb.appspot.com",
             messagingSenderId: "952940918932",
@@ -61,97 +61,98 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+
+        const fire_db = getFirestore(app);
+        const bookDocumentRef = collection(fire_db, 'books');
 
         const tableB = document.getElementById('tableB');
 
-        function displayBooks() {
-            const booksRef = ref(db, 'user');
-            tableB.innerHTML = "";
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        const row = `<tr>
-                            <td>${book.name}</td>
-                            <td>${book.author}</td>
-                            <td>${book.publisher}</td>
-                            <td>${book.quantity}</td>
-                        </tr>`;
-                        tableB.innerHTML += row;
-                    }
-                }
-            });
-        }
+        async function displayBooks() {
+            try {
+                const querySnapshot = await getDocs(bookDocumentRef);
 
-        // Call the function to display books when the page loads
+                tableB.innerHTML = "";
+
+                querySnapshot.forEach((doc) => {
+                    const book = doc.data();
+                    const row = `<tr>
+                                    <td>${book.name}</td>
+                                    <td>${book.author}</td>
+                                    <td>${book.publisher}</td>
+                                    <td>${book.quantity}</td>
+                                </tr>`;
+                    tableB.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error displaying books:", error);
+            }
+        }
         displayBooks();
 
         document.getElementById("add_button").addEventListener('click', function () {
-            if (document.getElementById("name").value === "" || document.getElementById("quantity").value === "" || document.getElementById("publisher").value === "" || document.getElementById("author").value === "") {
+            const name = document.getElementById("name").value;
+            const author = document.getElementById("author").value;
+            const publisher = document.getElementById("publisher").value;
+            const quantity = document.getElementById("quantity").value;
+            if (name === "" || author === "" || publisher === "" || quantity === "") {
                 window.alert("Error!! Please Fill in All the Details.");
             } else {
-                set(ref(db, 'user/' + document.getElementById("name").value), {
-                    name: document.getElementById("name").value,
-                    author: document.getElementById("author").value,
-                    publisher: document.getElementById("publisher").value,
-                    quantity: document.getElementById("quantity").value
+                return setDoc(doc(bookDocumentRef), {
+                    name: name,
+                    author: author,
+                    publisher: publisher,
+                    quantity: parseInt(quantity)
                 }).then(() => {
                     alert("Book Added Successfully");
+                    document.getElementById("add_form").reset();
                     displayBooks();
-                });
-                document.getElementById("add_form").reset();
+                })
             }
         });
-        function removeBook(bookName) {
-            // Check if the book is available and allocate it to the student
-            const booksRef = ref(db, 'user');
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        if (book.name === bookName) {
-                            if (book.quantity < parseFloat(document.getElementById("quantity").value)) {
-                                window.alert("Quantity mentioned is more than the book in stock");
-                            } else if (book.quantity > 0) {
-                                const updatedQuantity = book.quantity - parseFloat(document.getElementById("quantity").value);
-                                const bookRef = child(booksRef, key);
-                                set(bookRef, {
-                                    ...book,
-                                    quantity: updatedQuantity
-                                }).then(() => {
-                                    if (updatedQuantity === 0) {
-                                        // Only remove the book if quantity is now 0
-                                        const bookRef = child(booksRef, key);
-                                        set(bookRef, null).then(() => {
-                                            alert("Book Removed Successfully");
-                                            document.getElementById("add_form").reset();
-                                        }).catch((error) => {
-                                            console.error("Error removing book:", error);
-                                        });
-                                    } else {
-                                        alert("Book Removed Successfully");
-                                        document.getElementById("add_form").reset();
-                                    }
-                                    displayBooks();
-                                }).catch((error) => {
-                                    console.error("Error updating book:", error);
-                                });
+        async function removeBook(bookName) {
+            try {
+                // Changes in Firestore query and retrieving document reference
+                const q = query(bookDocumentRef, where('name', '==', bookName));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach(async (doc) => {
+                        const book = doc.data();
+                        const quantityInput = parseFloat(document.getElementById("quantity").value);
+
+                        if (book.quantity < quantityInput) {
+                            window.alert("Quantity mentioned is more than the book in stock");
+                        } else if (book.quantity > 0) {
+                            const updatedQuantity = book.quantity - quantityInput;
+
+                            // Update reference handling
+                            const bookDocRef = doc.ref;
+                            await updateDoc(bookDocRef, { quantity: updatedQuantity });
+
+                            if (updatedQuantity === 0) {
+                                // Delete reference handling
+                                await deleteDoc(bookDocRef);
+                                alert("Book Removed Successfully");
                             } else {
-                                alert("Book is currently unavailable.");
-                                document.getElementById("add_form").reset();
+                                alert("Book Quantity Updated Successfully");
                             }
-                            return;
+
+                            document.getElementById("add_form").reset();
+                            displayBooks();
+                        } else {
+                            alert("Book is currently unavailable.");
+                            document.getElementById("add_form").reset();
                         }
-                    }
+                    });
                 }
-            });
+            } catch (error) {
+                console.error("Error removing book:", error);
+            }
         }
 
+
         var removeButton = document.querySelector("#remove_button");
-        removeButton.addEventListener('click', function () {
+        removeButton.addEventListener('click', function (e) {
             if (document.getElementById("quantity").value === "") {
                 window.alert("Please Fill The Quantity.");
             } else {

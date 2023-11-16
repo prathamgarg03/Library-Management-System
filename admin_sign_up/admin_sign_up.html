@@ -20,7 +20,8 @@
                 <h2>Admin Sign Up</h2>
                 <img src="../photos/email.png" alt="email"><input type="email" name="sign_up_email" id="sign_up_email"
                     placeholder="Enter Email address" required> <br>
-                <img src="../photos/name.jpg" alt="name"><input type="text" name="user_name" id="user_name" placeholder=" Enter your Full name" required> <br>
+                <img src="../photos/name.jpg" alt="name"><input type="text" name="user_name" id="user_name"
+                    placeholder=" Enter your Full name" required> <br>
                 <img src="../photos/password.png" alt="password"><input type="password" name="sign_up_password"
                     id="sign_up_password" placeholder="Create password" required> <br>
                 <img src="../photos/password_confirm.png" alt="password_confirm"><input type="text"
@@ -31,11 +32,9 @@
             Are You a Student? <a href="../studentLogin/studentLogin.html">Click Here</a>
         </section>
         <script type="module">
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-            import {
-                getFirestore, collection, getDocs, addDoc, query, where
-
-            } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+            import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+            import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
             const firebaseConfig = {
                 apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -47,29 +46,52 @@
             };
 
             const app = initializeApp(firebaseConfig);
-            const db = getFirestore();
+
+            const auth = getAuth(app);
+
+            const db = getFirestore(app);
             const colRef = collection(db, 'admin');
 
             const sign = document.getElementById('signForm');
             document.getElementById('SignUp').addEventListener('click', function (evt) {
-                if(sign.sign_up_password.value !== sign.password_confirm.value) {
+                if (sign.sign_up_password.value !== sign.password_confirm.value) {
                     alert("Make sure both the passwords match!");
                     sign.reset();
                     return;
                 }
                 evt.preventDefault();
-                addDoc(colRef, {
-                    email: sign.sign_up_email.value,
-                    name: sign.user_name.value,
-                    password: sign.sign_up_password.value,
-                    flag: false,
-                })
-                .then(() => {
-                    alert("Sign Up successful. You will be redirected to the login page");
-                    const path = '../adminLogin/adminLogin.html';
-                    window.open(path, "_self");
-                })
+                createUserWithEmailAndPassword(auth, sign.sign_up_email.value, sign.sign_up_password.value)
+                    .then((userCredential) => {
+                        const user = userCredential.user;
+                        return setDoc(doc(colRef, user.uid), {
+                            email: sign.sign_up_email.value,
+                            name: sign.user_name.value,
+                        }).then(() => {
+                            console.log(user);
+                            sign.reset();
+                            alert("signup successful");
+                            window.open('../adminHome/adminHome.html', '_self');
+                        })
+                    })
+                    .catch((error) => {
+                        const errorCode = error.code;
+                        const errorMessage = error.message;
+                        console.log(errorCode + " " + errorMessage);
+                    });
             })
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    // User is signed in, see docs for a list of available properties
+                    // https://firebase.google.com/docs/reference/js/auth.user
+                    const uid = user.email;
+                    console.log(uid);
+                    // ...
+                } else {
+                    // User is signed out
+                    console.log('no log in')
+                    // ...
+                }
+            });
         </script>
     </main>
 

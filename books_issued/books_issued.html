@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../add_remove/add_remove.css">
-    <script src="add_remove.js" defer></script>
     <title>Add Books</title>
 </head>
 
@@ -20,9 +19,7 @@
                 <thead>
                     <tr>
                         <th>Student ID</th>
-                        <th>Name</th>
-                        <th>Author</th>
-                        <th>Publisher</th>
+                        <th>Book Name</th>
                         <th>Date Issued</th>
                     </tr>
                 </thead>
@@ -35,11 +32,10 @@
         <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
     </footer>
     <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
             authDomain: "lms1-2fdcb.firebaseapp.com",
@@ -48,32 +44,29 @@
             messagingSenderId: "952940918932",
             appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
-
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+
+        const fire_db = getFirestore(app);
+        const studentref = collection(fire_db, 'student')
+        const loanRef = collection(fire_db, 'loan');
 
         const tableB = document.getElementById('tableB');
 
-        function displayBooks() {
-            const booksRef = ref(db, 'loan_table');
-            tableB.innerHTML = "";
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        const row = `<tr>
-                            //<td> </td> get student id here
-                            <td>${book.name}</td>
-                            <td>${book.author}</td>
-                            <td>${book.publisher}</td>
-                            <td>${book.quantity}</td>
+        async function displayBooks() {
+            const issue_info = await getDocs(loanRef)
+            var row = ""
+            issue_info.forEach((doc) => {
+                const loans = doc.data()
+                const timestampString = loans.timestamp;
+                const issueDate = new Date(timestampString)
+                const issueDateString = ((issueDate).toISOString().split('T')[0]);
+                row += `<tr>
+                            <td>${loans.studentId}</td>
+                            <td>${loans.bookName}</td>
+                            <td>${issueDateString}</td>
                         </tr>`;
-                        tableB.innerHTML += row;
-                    }
-                }
-            });
+            })
+            tableB.innerHTML = row
         }
 
         // Call the function to display books when the page loads

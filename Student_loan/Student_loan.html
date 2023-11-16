@@ -1,95 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Search</title>
     <link rel="stylesheet" href="../student_search/student_Search.css">
 </head>
+
 <body>
-    <header><h1>Find Books</h1></header>
-    
-    <section class="form">
-        <form action="" id="add_form">
-            <h2>Loans</h2>
-            <b>Name:</b> <input id="name" type="text" placeholder="Enter book name" required>
-            <button id="add_button" type="button">Search</button>
-        </form>
-    </section>
-    
-    <section class="loaned-books">
+    <header>
+        <h1>Find Books</h1>
+        <div id="studentIdDisplay"></div>
+
+    </header>
+
+    <section class="catalouge">
         <h2>Loaned Books</h2>
         <table class="books">
             <thead>
                 <tr>
                     <th>Book Name</th>
-                    <th>Author</th>
-                    <th>Publisher</th>
+                    <th>Date Issued</th>
+                    <th>Due In</th>
                 </tr>
             </thead>
             <tbody id="tableB">
             </tbody>
         </table>
     </section>
-    
+
     <footer>
         <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
     </footer>
 </body>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-    import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+    import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
     const firebaseConfig = {
-            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
-            authDomain: "lms1-2fdcb.firebaseapp.com",
-            projectId: "lms1-2fdcb",
-            storageBucket: "lms1-2fdcb.appspot.com",
-            messagingSenderId: "952940918932",
-            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+        authDomain: "lms1-2fdcb.firebaseapp.com",
+        projectId: "lms1-2fdcb",
+        storageBucket: "lms1-2fdcb.appspot.com",
+        messagingSenderId: "952940918932",
+        appId: "1:952940918932:web:9f757d9f2d77e445049c81"
     };
     const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    
+
+    const fire_db = getFirestore(app);
+
+    const auth = getAuth(app);
+    const user = auth.currentUser;
+
+    let user_id = auth.currentUser;
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            document.getElementById("studentIdDisplay").textContent = user.email;
+            user_id = user.uid;
+            displayBooks()
+            // ...
+        } else {
+            // User is signed out
+            console.log('no log in')
+            // ...
+        }
+    });
+
     const tableB = document.getElementById('tableB');
 
-    function displayBooks(temp) {
-            tableB.innerHTML = "";
-            const booksRef = ref(db, 'loan_table');
-            get(booksRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const books = snapshot.val();
-                    for (const key in books) {
-                        const book = books[key];
-                        if (temp.sub) { //get id here and match
-                            const row = `<tr>
-                                    <td>${book.name}</td>
-                                    <td>${book.author}</td>
-                                    <td>${book.publisher}</td>
-                                    </tr>`;
-                            tableB.innerHTML += row;
-                        }
-                        
-                    }
-                }
-            });
-            
+    async function displayBooks() {
+        const patron = doc(fire_db, 'student', user_id)
+        const patron_info = await getDoc(patron)
+        var row = "";
+        if (patron_info.exists()) {
+            const books = patron_info.data().books_issued
+            for (const key in books) {
+                const timestampString = books[key].timestamp;
+                const issueDate = new Date(timestampString)
+                const issueDateString = ((issueDate).toISOString().split('T')[0]);
+                const todayDate = (new Date())
+                const daysDifference = Math.floor((todayDate - issueDate) / (1000 * 60 * 60 * 24));
+                row += `<tr>
+                        <td>${books[key].bookName}</td>
+                        <td>${issueDateString}</td>
+                        <td style="color: red;">${14 - daysDifference} days</td>
+                        </tr>`
+            }
+            tableB.innerHTML = row
         }
-
-        var buttonx = document.querySelector("#add_button");
-        //var temp = document.getElementById('name').value;
-        buttonx.addEventListener('click', function(e) {
-            e.preventDefault();
-            var temp = document.getElementById('name').value; //send id here not name of
-            displayBooks(temp);
-        });
-
-    // var search_button = document.querySelector("#add_button");
-    // search_button.addEventListener('click', function(e) {
-    //     //e.preventDefault();
-    //     displayBooks();
-
-    // });
+        else {
+            console.log('No books issued')
+        }
+    }
 </script>
-</html>
 
+</html>
