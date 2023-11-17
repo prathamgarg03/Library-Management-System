@@ -64,10 +64,12 @@
         const loanRef = collection(fire_db, 'loan');
 
         let user_id = null;
+        let userEmail = null;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById("studentIdDisplay").textContent = user.email;
+                userEmail = user.email;
                 user_id = user.uid;
                 // ...
             } else {
@@ -149,6 +151,7 @@
                             bookId: doc.id,
                             bookName: book.name,
                             studentId: user_id,
+                            studentEmail: userEmail,
                             timestamp: (new Date()).toISOString()
                         };
                         await addDoc(loanRef, loanData);
