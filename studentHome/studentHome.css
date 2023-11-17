@@ -37,7 +37,6 @@ footer
 {
     font-size: large;
     margin: 20px;
-    margin-top: 13vw;
 }
 footer>a
 {
@@ -48,8 +47,21 @@ footer>a
 footer>a:hover
 {
     color:coral;
+    text-decoration: underline;
 }
-#log_out{
-    color:red;
-    margin-left: 90vw;
+#logOut
+{
+    margin: 20px;
+    border-radius: 8px;
+    border: 1px solid #333333;
+    padding: 10px;
+    width: 7em;
+    text-align: center;
+    font-weight: bold;
+}
+
+#logOut:hover
+{
+    background-color: lightcoral;
+    color: #fff;
 }
