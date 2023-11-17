@@ -61,7 +61,7 @@
                 const issueDate = new Date(timestampString)
                 const issueDateString = ((issueDate).toISOString().split('T')[0]);
                 row += `<tr>
-                            <td>${loans.studentId}</td>
+                            <td>${loans.studentEmail}</td>
                             <td>${loans.bookName}</td>
                             <td>${issueDateString}</td>
                         </tr>`;
