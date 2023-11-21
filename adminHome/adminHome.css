@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -13,17 +14,40 @@ header {
 }
 h1 {
     font-size: 28px;
+    font-family: 'Poppins', sans-serif;
+}
+
+#t {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    font-family: 'Poppins', sans-serif;
+    min-height: 80vh;
+}
+
+#t1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn
 {
-    width: 24vw;
-    height: 20vw;
+    width: 13vw;
+    height: 13vw;
     font-size: large;
     font-weight: bold;
+    font-family: 'Poppins', sans-serif;
     margin: 4px;
     border-radius: 10px;
-    margin-top: 10vw;
+    margin-top: 5vw;
+    margin-bottom: 10vw;
+
+    opacity: 0;
+    filter: blur(20px);
+    transform: translateX(-100%);
+    transition: all 0.5s;
+
 }
 .btn:hover
 {
@@ -39,13 +63,56 @@ footer
     margin: 20px;
     margin-top: 13vw;
 }
-footer>a
-{
-    color: #333333;
-    text-decoration: none;
+
+.show {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
 }
 
-footer>a:hover
+.btn:nth-child(2) {
+    transition-delay: 200ms;
+}
+
+.btn:nth-child(3) {
+    transition-delay: 400ms;
+}
+
+.btn:nth-child(4) {
+    transition-delay: 500ms;
+}
+#logOut
 {
-    color:coral;
+    margin: 20px;
+    border-radius: 8px;
+    border: 1px solid #333333;
+    padding: 10px;
+    width: 7em;
+    text-align: center;
+    font-weight: bold;
+}
+
+#logOut:hover
+{
+    background-color: lightcoral;
+    color: #fff;
+}
+
+
+.show {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateX(0);
+}
+
+.btn:nth-child(2) {
+    transition-delay: 200ms;
+}
+
+.btn:nth-child(3) {
+    transition-delay: 400ms;
+}
+
+.btn:nth-child(4) {
+    transition-delay: 500ms;
 }
