@@ -97,22 +97,3 @@ footer
     background-color: lightcoral;
     color: #fff;
 }
-
-
-.show {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateX(0);
-}
-
-.btn:nth-child(2) {
-    transition-delay: 200ms;
-}
-
-.btn:nth-child(3) {
-    transition-delay: 400ms;
-}
-
-.btn:nth-child(4) {
-    transition-delay: 500ms;
-}
