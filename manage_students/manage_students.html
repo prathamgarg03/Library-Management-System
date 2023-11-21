@@ -9,9 +9,14 @@
 </head>
 
 <body>
+    <header>
+        <h1> Manage Student </h1>
+    </header>
+    <footer>
+        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
+    </footer>
     <main>
         <section class="catalouge">
-            <h2>Manage Students</h2>
             <table class="books">
                 <thead>
                     <tr>
@@ -24,9 +29,6 @@
             </table>
         </section>
     </main>
-    <footer>
-        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
-    </footer>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
@@ -54,19 +56,20 @@
             issue_info.forEach((doc) => {
                 const info = doc.data()
                 const uid = doc.id;
-                if (uid != uidToDelete){
+                if (!uidToDelete.includes(uid)){
                 row += `<tr>
                             <td>${info.email}</td>
-                            <td> <button id = "${uid}"> Delete </button> </td>
+                            <td> <button id = "${uid}"> Remove </button> </td>
                         </tr>`;
                     }
             })
             tableB.innerHTML = row
         }
-        var uidToDelete;
+        var uidToDelete = [];
         document.getElementById('tableB').addEventListener('click', async function (e) {
 
-            uidToDelete = e.target.id;
+            uidToDelete.push(e.target.id);
+
             console.log(uidToDelete);
             window.alert('User Deleted Successfully');
             displayBooks();
