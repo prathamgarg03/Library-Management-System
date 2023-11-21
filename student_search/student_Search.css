@@ -84,7 +84,10 @@ table.books td {
 table.books tr:hover {
     background-color: #f2f2f2;
 }
-
+#tableB
+{
+   text-align: center;
+}
 footer
 {
     font-size: large;
