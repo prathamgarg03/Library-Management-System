@@ -13,6 +13,9 @@
         <h1>Find Books</h1>
         <div id="studentIdDisplay"></div>
     </header>
+    <footer>
+        <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
+    </footer>
 
     <section class="form">
         <form action="" id="add_form">
@@ -38,9 +41,7 @@
             </tbody>
         </table>
     </section>
-    <footer>
-        <a href="../studentHome/studentHome.html" id="scrolldown">&lt Back To Previous Page</a>
-    </footer>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, FieldValue } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
@@ -64,10 +65,12 @@
         const loanRef = collection(fire_db, 'loan');
 
         let user_id = null;
+        let userEmail = null;
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById("studentIdDisplay").textContent = user.email;
+                userEmail = user.email;
                 user_id = user.uid;
                 // ...
             } else {
@@ -149,6 +152,7 @@
                             bookId: doc.id,
                             bookName: book.name,
                             studentId: user_id,
+                            studentEmail: userEmail,
                             timestamp: (new Date()).toISOString()
                         };
                         await addDoc(loanRef, loanData);
