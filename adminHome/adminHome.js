@@ -14,3 +14,18 @@ function goToBookIssue(){
    window.open(path, "_self");
 }
 
+const button2 = document.querySelector("#defaulter");
+button2.onclick = goToDefaulter_list;
+
+function goToDefaulter_list(){
+   const path = "../defaulter_list/defaulter_list.html";
+   window.open(path,"_self");
+}
+
+const button4 = document.querySelector("#manage_student");
+button4.onclick = goToManage_student;
+
+function goToManage_student(){
+   const path ="../manage_students/manage_students.html";
+   window.open(path,"_self");
+}
