@@ -21,3 +21,11 @@ function goToDefaulter_list(){
    const path = "../defaulter_list/defaulter_list.html";
    window.open(path,"_self");
 }
+
+const button4 = document.querySelector("#manage_student");
+button4.onclick = goToManage_student;
+
+function goToManage_student(){
+   const path ="../manage_student/manage_student.html";
+   window.open(path,"_self");
+}
