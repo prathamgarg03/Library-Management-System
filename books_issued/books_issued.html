@@ -58,7 +58,8 @@
             var row = ""
             issue_info.forEach((doc) => {
                 const loans = doc.data()
-                const timestampString = loans.timestamp;
+                let timestampString = loans.timestamp;
+                timestampString = timestampString.replace(/^"|"$/g, '');
                 const issueDate = new Date(timestampString)
                 const issueDateString = ((issueDate).toISOString().split('T')[0]);
                 row += `<tr>
