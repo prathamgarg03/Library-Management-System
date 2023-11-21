@@ -1,0 +1,14 @@
+.moreInfo {
+    background-color: #f2f2f2; /* Change this color to your desired background */
+  border: none;
+  color: black;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+.moreInfo:hover {
+    text-decoration: underline;
+}
+#info {
+    display: none;
+}
