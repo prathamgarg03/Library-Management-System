@@ -26,6 +26,6 @@ const button4 = document.querySelector("#manage_student");
 button4.onclick = goToManage_student;
 
 function goToManage_student(){
-   const path ="../manage_student/manage_student.html";
+   const path ="../manage_students/manage_students.html";
    window.open(path,"_self");
 }
