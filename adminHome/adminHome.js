@@ -6,6 +6,14 @@ function goToAddRemovePage(){
    window.open(path, "_self");
 }
 
+const button2 = document.querySelector("#manage_student");
+button2.onclick = goToManage_student;
+
+function goToManage_student(){
+   const path ="../manage_students/manage_students.html";
+   window.open(path,"_self");
+}
+
 const button3 = document.querySelector("#bookIssued");
 button3.onclick = goToBookIssue;
 
@@ -14,18 +22,10 @@ function goToBookIssue(){
    window.open(path, "_self");
 }
 
-const button2 = document.querySelector("#defaulter");
-button2.onclick = goToDefaulter_list;
+const button4 = document.querySelector("#defaulter");
+button4.onclick = goToDefaulter;
 
-function goToDefaulter_list(){
+function goToDefaulter(){
    const path = "../defaulter_list/defaulter_list.html";
-   window.open(path,"_self");
-}
-
-const button4 = document.querySelector("#manage_student");
-button4.onclick = goToManage_student;
-
-function goToManage_student(){
-   const path ="../manage_students/manage_students.html";
-   window.open(path,"_self");
+   window.open(path, "_self");
 }
