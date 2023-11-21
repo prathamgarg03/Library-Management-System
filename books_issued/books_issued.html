@@ -10,11 +10,14 @@
 
 <body>
     <header>
-        <h1>Admin Home</h1>
+        <h1>Loaned Books</h1>
     </header>
+    <footer>
+        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
+    </footer>
     <main>
         <section class="catalouge">
-            <h2>Loaned Books</h2>
+
             <table class="books">
                 <thead>
                     <tr>
@@ -28,9 +31,7 @@
             </table>
         </section>
     </main>
-    <footer>
-        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
-    </footer>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
@@ -61,7 +62,7 @@
                 const issueDate = new Date(timestampString)
                 const issueDateString = ((issueDate).toISOString().split('T')[0]);
                 row += `<tr>
-                            <td>${loans.studentId}</td>
+                            <td>${loans.studentEmail}</td>
                             <td>${loans.bookName}</td>
                             <td>${issueDateString}</td>
                         </tr>`;
