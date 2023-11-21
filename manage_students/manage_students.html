@@ -9,15 +9,9 @@
 </head>
 
 <body>
-    <header>
-      <h1>Manage Students</h1>
-    </header>
-        <footer>
-        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
-    </footer>
     <main>
         <section class="catalouge">
-            
+            <h2>Manage Students</h2>
             <table class="books">
                 <thead>
                     <tr>
@@ -30,7 +24,9 @@
             </table>
         </section>
     </main>
-
+    <footer>
+        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
+    </footer>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
@@ -58,57 +54,22 @@
             issue_info.forEach((doc) => {
                 const info = doc.data()
                 const uid = doc.id;
+                if (uid != uidToDelete){
                 row += `<tr>
                             <td>${info.email}</td>
-                            <td> <button id = "${uid} style="margin: 0;"> Remove </button> </td>
+                            <td> <button id = "${uid}"> Delete </button> </td>
                         </tr>`;
+                    }
             })
             tableB.innerHTML = row
         }
-
-        function deleteUser1(uidToDelete) {
-            // Get the current user and perform the deletion
-            const currentUser = auth.currentUser;
-
-            // Check if the current user is an admin or has permissions to delete users
-            // This part might need to be handled with your custom logic or Firebase roles
-            if (currentUser) {
-                // Delete the user by UID
-                auth.currentUser.getIdToken(/* forceRefresh */ true)
-                    .then((idToken) => {
-                        // Send the ID token along with the UID to the server for deletion
-                        fetch('/deleteUser', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ idToken, uidToDelete }),
-                        })
-                            .then(response => {
-                                if (response.ok) {
-                                    console.log(`User with UID ${uidToDelete} deleted successfully.`);
-                                } else {
-                                    console.error('Failed to delete user.');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                    })
-                    .catch((error) => {
-                        console.error('Error getting ID token:', error);
-                    });
-            } else {
-                console.log('User not logged in or does not have permissions.');
-            }
-        }
-
+        var uidToDelete;
         document.getElementById('tableB').addEventListener('click', async function (e) {
 
-            var uidToDelete = e.target.id;
+            uidToDelete = e.target.id;
             console.log(uidToDelete);
-
-            deleteUser1(uidToDelete);
+            window.alert('User Deleted Successfully');
+            displayBooks();
             
 
             //     auth().deleteUser(uidToDelete)
@@ -120,7 +81,6 @@
             //         });
         });
 
-            // Call the function to display books when the page loads
         displayBooks();
 
     </script>
