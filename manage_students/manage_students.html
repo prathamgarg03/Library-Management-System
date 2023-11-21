@@ -1,20 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../add_remove/add_remove.css">
     <title>Student</title>
 </head>
+
 <body>
     <header>
-        <h1>Manage Students</h1>
+        <h1>Admin Home</h1>
     </header>
-    <footer>
-        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
-    </footer>
     <main>
         <section class="catalouge">
+            <h2>Manage Students</h2>
             <table class="books">
                 <thead>
                     <tr>
@@ -27,11 +26,13 @@
             </table>
         </section>
     </main>
-
+    <footer>
+        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
+    </footer>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, deleteUser } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -42,33 +43,85 @@
             appId: "1:952940918932:web:9f757d9f2d77e445049c81"
         };
         const app = initializeApp(firebaseConfig);
-
         const fire_db = getFirestore(app);
         const studentref = collection(fire_db, 'student')
         const loanRef = collection(fire_db, 'loan');
+        const auth = getAuth(app);
 
         const tableB = document.getElementById('tableB');
 
         async function displayBooks() {
-            const issue_info = await getDocs(loanRef)
+            const issue_info = await getDocs(studentref)
             var row = ""
             issue_info.forEach((doc) => {
-                const loans = doc.data()
-                const timestampString = loans.timestamp;
-                const issueDate = new Date(timestampString)
-                const issueDateString = ((issueDate).toISOString().split('T')[0]);
+                const info = doc.data()
+                const uid = doc.id;
                 row += `<tr>
-                            <td>${loans.studentEmail}</td>
-                            <td>${loans.bookName}</td>
-                            <td>${issueDateString}</td>
+                            <td>${info.email}</td>
+                            <td> <button id = "${uid}"> Delete </button> </td>
                         </tr>`;
             })
             tableB.innerHTML = row
         }
 
-        // Call the function to display books when the page loads
+        function deleteUser1(uidToDelete) {
+            // Get the current user and perform the deletion
+            const currentUser = auth.currentUser;
+
+            // Check if the current user is an admin or has permissions to delete users
+            // This part might need to be handled with your custom logic or Firebase roles
+            if (currentUser) {
+                // Delete the user by UID
+                auth.currentUser.getIdToken(/* forceRefresh */ true)
+                    .then((idToken) => {
+                        // Send the ID token along with the UID to the server for deletion
+                        fetch('/deleteUser', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ idToken, uidToDelete }),
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    console.log(`User with UID ${uidToDelete} deleted successfully.`);
+                                } else {
+                                    console.error('Failed to delete user.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    })
+                    .catch((error) => {
+                        console.error('Error getting ID token:', error);
+                    });
+            } else {
+                console.log('User not logged in or does not have permissions.');
+            }
+        }
+
+        document.getElementById('tableB').addEventListener('click', async function (e) {
+
+            var uidToDelete = e.target.id;
+            console.log(uidToDelete);
+
+            deleteUser1(uidToDelete);
+            
+
+            //     auth().deleteUser(uidToDelete)
+            //         .then(() => {
+            //             console.log('Successfully deleted user');
+            //         })
+            //         .catch((error) => {
+            //             console.error('Error deleting user:', error);
+            //         });
+        });
+
+            // Call the function to display books when the page loads
         displayBooks();
 
     </script>
 </body>
+
 </html>
