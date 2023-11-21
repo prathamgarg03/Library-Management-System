@@ -13,3 +13,4 @@ function goToSearchPage(){
     }
     
     loan.onclick=goToLoansPage;
+
