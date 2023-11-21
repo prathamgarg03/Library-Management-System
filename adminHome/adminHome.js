@@ -14,3 +14,10 @@ function goToBookIssue(){
    window.open(path, "_self");
 }
 
+const button2 = document.querySelector("#defaulter");
+button2.onclick = goToDefaulter_list;
+
+function goToDefaulter_list(){
+   const path = "../defaulter_list/defaulter_list.html";
+   window.open(path,"_self");
+}
