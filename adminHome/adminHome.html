@@ -8,17 +8,18 @@
     <link rel="stylesheet" href="adminHome.css">
     
 </head>
-
 <body>
     <header>
         <h1> Admin Home </h1>
         <div id="studentIdDisplay"></div> <button type="button" id="logOut">Log Out</button>
     </header>
-    <section>
-        <input class="btn" type="submit" value=" Add/Remove/Modify" id="addButton">
+    <section id = "t"> Welcome to the Admin Dashboard! </section>
+    <section id = "t1">
+        <input class="btn" type="submit" value=" Modify Catalogue" id="addButton">
         <input class="btn" type="submit" value=" Manage Students ">
-        <input class="btn" type="submit" value=" Books Issued " id="bookIssued">
-        <input class="btn" type="submit" value=" Defaulter List" id="defaulter">
+        <input class="btn" type="submit" value="Defaulter List" id="defaulter">
+        <input class="btn" type="submit" value=" Issued Books " id="bookIssued">
+        <input class="btn" type="submit" value=" Fines Due ">
     </section>
     <script src="adminHome.js" defer> </script>
     <script type="module">
@@ -55,6 +56,23 @@
                 // ...
             }
         });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    //entry.target.classList.remove('notShow');
+                    entry.target.classList.add('show');
+                } else {
+                    entry.target.classList.remove('show');
+                }
+            });
+        });
+
+        const hiddenElements = document.querySelectorAll('.btn');
+        hiddenElements.forEach((el) => {
+            //el.target.classList.add('notShow')
+            observer.observe(el)});
+
         const logOut = document.getElementById('logOut')
         logOut.addEventListener('click', () => {
             signOut(auth).then(() => {
