@@ -10,11 +10,14 @@
 
 <body>
     <header>
-        <h1>Admin Home</h1>
+      <h1>Manage Students</h1>
     </header>
+        <footer>
+        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
+    </footer>
     <main>
         <section class="catalouge">
-            <h2>Manage Students</h2>
+            
             <table class="books">
                 <thead>
                     <tr>
@@ -27,9 +30,7 @@
             </table>
         </section>
     </main>
-    <footer>
-        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
-    </footer>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
