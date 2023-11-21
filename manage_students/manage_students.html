@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../add_remove/add_remove.css">
+    <title>Student</title>
+</head>
+<body>
+    <header>
+        <h1>Manage Students</h1>
+    </header>
+    <footer>
+        <a href="../adminHome/adminHome.html" id="scroll-down">&lt Back To Previous Page</a>
+    </footer>
+    <main>
+        <section class="catalouge">
+            <table class="books">
+                <thead>
+                    <tr>
+                        <th> Student Email ID </th>
+                        <th> Actions </th>
+                    </tr>
+                </thead>
+                <tbody id='tableB'>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, updateDoc, deleteDoc, arrayUnion, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        };
+        const app = initializeApp(firebaseConfig);
+
+        const fire_db = getFirestore(app);
+        const studentref = collection(fire_db, 'student')
+        const loanRef = collection(fire_db, 'loan');
+
+        const tableB = document.getElementById('tableB');
+
+        async function displayBooks() {
+            const issue_info = await getDocs(loanRef)
+            var row = ""
+            issue_info.forEach((doc) => {
+                const loans = doc.data()
+                const timestampString = loans.timestamp;
+                const issueDate = new Date(timestampString)
+                const issueDateString = ((issueDate).toISOString().split('T')[0]);
+                row += `<tr>
+                            <td>${loans.studentEmail}</td>
+                            <td>${loans.bookName}</td>
+                            <td>${issueDateString}</td>
+                        </tr>`;
+            })
+            tableB.innerHTML = row
+        }
+
+        // Call the function to display books when the page loads
+        displayBooks();
+
+    </script>
+</body>
+</html>
