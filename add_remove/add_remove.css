@@ -55,6 +55,8 @@ button {
     cursor: pointer;
     margin: 15px;
 }
+
+
 section.catalouge{
     margin: 10px auto;
     width: 50%;
@@ -67,20 +69,21 @@ table {
     margin: auto;
     width: 100%;
     border-collapse: collapse;
+    text-align: center;
 }
-table th {
+table.books th {
     background-color: #333;
     color: #fff;
     padding: 10px;
-    text-align: left;
+    text-align: center;
 }
-table tr {
+table.books tr {
     border-bottom: 1px solid #ccc;
 }
-table td {
+table.books td {
     padding: 10px;
 }
-table tr:hover {
+table.books tr:hover {
     background-color: #f2f2f2;
 }
 
@@ -88,6 +91,7 @@ footer
 {
     font-size: large;
     margin: 20px;
+    margin-top: 7vw;
 }
 footer>a
 {
