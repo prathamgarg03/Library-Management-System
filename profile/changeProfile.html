@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +9,19 @@
     <link rel="stylesheet" href="../add_remove/add_remove.css">
 
 </head>
+
 <body>
 
     <header>
         <h1>User Profile</h1>
     </header>
-    
+
     <footer>
-       <a href="../adminHome/adminHome.html">&lt Back to Home page</a> 
+        <a href="../adminHome/adminHome.html">&lt Back to Home page</a>
     </footer>
     <form action="/update-profile" method="post">
         <label for="username">Username:</label><span id="username"></span> <br>
-       
+
         <label for="email">Name:</label><span id="name"></span>
 
     </form>
@@ -29,10 +31,10 @@
     </div>
 
     <div id="changePasswordForm" class="hidden">
-        
+
         <div id="changeHeading">
         </div>
-        <form action="/change-password" method="post">
+        <form action="/change-password" method="post" id="pass_id">
             <label for="currentPassword">Current Password:</label>
             <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password">
 
@@ -47,11 +49,11 @@
     </div>
 
     <script type="module">
-        
+
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
-        import { getDoc,getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+        import { updatePassword, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+        import { getDoc, getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -65,16 +67,33 @@
 
         const auth = getAuth(app);
         const user = auth.currentUser;
-        let user_id= auth.currentUser;
+        let user_id = auth.currentUser;
 
         const db = getFirestore(app);
         const colRef = collection(db, 'student');
+
+
+        const form = document.getElementById("pass_id");
+        
+        form.addEventListener("submit", (e) => {
+            let newPassword = document.getElementById("confirmNewPassword").value;
+            e.preventDefault();
+            //console.log(newPassword);
+            updatePassword(user, newPassword).then(() => {
+                console.log(newPassword);
+                // Update successful.
+            }).catch((error) => {
+                // An error ocurred
+                console.log(error);
+                // ...
+            });
+        })
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/auth.user
-                user_id=user.uid;
+                user_id = user.uid;
                 document.getElementById("username").textContent = user.email;
                 getName().then((books) => {
                     document.getElementById("name").innerHTML = `${books}`
@@ -87,30 +106,33 @@
                 console.log('no log in')
                 // ...
             }
+            
         });
-        
+
         async function getName() {
-            const patron = doc(db, 'student', user_id)
-            let name='';
+            const patron = doc(db, 'admin', user_id)
+            console.log(user_id);
+            let name = '';
             const patron_info = await getDoc(patron)
             if (patron_info.exists()) {
-                 name = patron_info.data().name
-                
+                name = patron_info.data().name
+                return name;
             }
             else {
-                console.log('No books issued')
+                console.log('No Name')
             }
-            return name;
+            
         }
 
     </script>
 
     <script>
-                function openChangePasswordForm() {
+        function openChangePasswordForm() {
             var changePasswordForm = document.getElementById("changePasswordForm");
             changePasswordForm.classList.toggle("hidden");
         }
     </script>
 
 </body>
+
 </html>
