@@ -66,6 +66,7 @@
                         window.open('../studentHome/studentHome.html', '_self');
                     })
                     .catch((error) => {
+                        alert("Email/Password Incorrect");
                         const errorCode = error.code;
                         const errorMessage = error.message;
                         console.log(errorCode + " " + errorMessage);
