@@ -62,14 +62,14 @@
                     .then((userCredential) => {
                         const user = userCredential.user;
                         loginform.reset();
-                        alert("login successful");
+                        alert("Login Successful");
                         window.open('../studentHome/studentHome.html', '_self');
                     })
                     .catch((error) => {
                         const errorCode = error.code;
                         const errorMessage = error.message;
                         console.log(errorCode + " " + errorMessage);
-                        alert("Email/Password Incorrect");
+                        alert("Invalid Email or Password");
                     })
             }
         })
