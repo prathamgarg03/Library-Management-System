@@ -75,7 +75,7 @@
                                 <path
                                     d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
                             </svg>
-                            &nbsp;Requests
+                            &nbsp;Returns
                         </a>
                     </li>
                     <li>
@@ -124,8 +124,8 @@
             <div class="card text-white bg-success mb-3" id="card1">
                 <div class="card-body">
                     <section class="cardBody">
-                        <h2 id="tBooks"><strong>6</strong></h2>
-                        <h4>Total <br> Books</h4>
+                        <h2 id="tBooks">&nbsp;</h2>
+                        <h4>Find <br> Books</h4>
                     </section>
                     <section class="cardBody">
                         <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor"
@@ -142,8 +142,8 @@
             <div class="card text-white bg-info mb-3" id="card2">
                 <div class="card-body">
                     <section class="cardBody">
-                        <h2 id="tStdnt"><strong>6</strong></h2>
-                        <h4>Total Students</h4>
+                        <h2 id="tStdnt"><strong>0</strong></h2>
+                        <h4>Return a Book</h4>
                     </section>
                     <section class="cardBody">
                         <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor"
@@ -162,7 +162,7 @@
             <div class="card text-white bg-warning mb-3" id="card3">
                 <div class="card-body">
                     <section class="cardBody">
-                        <h2 id="tBookIss"><strong>6</strong></h2>
+                        <h2 id="tBookIss">&nbsp;</h2>
                         <h4>Total Books Issued</h4>
                     </section>
                     <section class="cardBody">
@@ -180,7 +180,7 @@
             <div class="card text-white bg-danger mb-3" id="card4">
                 <div class="card-body">
                     <section class="cardBody">
-                        <h2 id="tFine"><strong>6</strong></h2>
+                        <h2 id="tFine"><strong>0</strong></h2>
                         <h4>Total Fines Due</h4>
                     </section>
                     <section class="cardBody">
@@ -208,7 +208,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
@@ -223,6 +223,7 @@
         const auth = getAuth(app);
         const user = auth.currentUser;
 
+        let user_id = auth.currentUser;
         const db = getFirestore(app);
         const colRef = collection(db, 'student');
 
@@ -231,6 +232,15 @@
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/auth.user
                 document.getElementById("studentIdDisplay").textContent = user.email;
+                user_id = user.uid;
+                total('books').then((books) => {
+                    document.getElementById("tBooks").innerHTML = `<strong>${books}<strong>`
+                }).catch((error) => {
+                    console.error('Error getting books:', error);
+                });
+                loans().then((loan) => {
+                    document.getElementById("tBookIss").innerHTML = `<strong>${loan}<strong>`
+                })
                 // ...
             } else {
                 // User is signed out
@@ -250,41 +260,42 @@
             });
         })
 
+        async function total(ref) {
+            const colRef = collection(db, ref);
+            try {
+                const querySnapshot = await getDocs(colRef);
+                const numberOfDocs = querySnapshot.size;
+                return numberOfDocs;
+            } catch (error) {
+                console.log("Error getting documents:", error);
+                return 0;
+            }
+        }
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    //entry.target.classList.remove('notShow');
-                    entry.target.classList.add('show');
-                } else {
-                    entry.target.classList.remove('show');
+        async function loans() {
+            const patron = doc(db, 'student', user_id)
+            const patron_info = await getDoc(patron)
+            let sum = 0
+            if (patron_info.exists()) {
+                const books = patron_info.data().books_issued
+                for (const key in books) {
+                    sum ++
                 }
-            });
-        });
+            }
+            else {
+                console.log('No books issued')
+            }
+            return sum
+        }
 
-        const hiddenElements = document.querySelectorAll('.btn');
-        hiddenElements.forEach((el) => {
-            //el.target.classList.add('notShow')
-            observer.observe(el)
-        });
-
-        const button1 = document.querySelector("#searchButton");
-        button1.onclick = goToSearchPage;
-
-        function goToSearchPage() {
+        document.getElementById("card1").addEventListener('click', () => {
             const path = "../student_search/student_Search.html";
             window.open(path, "_self");
-        }
-
-        let loan = document.getElementById("loan_button");
-        function goToLoansPage() {
+        })
+        document.getElementById("card3").addEventListener('click', () => {
             const path = "../Student_loan/Student_loan.html";
             window.open(path, "_self");
-        }
-
-        loan.onclick = goToLoansPage;
-
-
+        })
     </script>
 </body>
 
