@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="changeProfile.css">
+    <link rel="stylesheet" href="../add_remove/add_remove.css">
+
+</head>
+<body>
+
+    <header>
+        <h1>User Profile</h1>
+    </header>
+    
+    <footer>
+       <a href="../adminHome/adminHome.html">&lt Back to Home page</a> 
+    </footer>
+    <form action="/update-profile" method="post">
+        <label for="username">Username:</label><span id="username"></span> <br>
+       
+        <label for="email">Name:</label><span id="name"></span>
+
+    </form>
+
+    <div id="change">
+        <button id="changePasswordBtn" onclick="openChangePasswordForm()">Change Password</button>
+    </div>
+
+    <div id="changePasswordForm" class="hidden">
+        
+        <div id="changeHeading">
+        </div>
+        <form action="/change-password" method="post">
+            <label for="currentPassword">Current Password:</label>
+            <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password">
+
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
+
+            <label for="confirmNewPassword">Confirm New Password:</label>
+            <input type="password" id="confirmNewPassword" name="confirmNewPassword" placeholder="Confirm new password">
+
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+
+    <script type="module">
+        
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
+        import { getDoc,getFirestore, collection, doc, setDoc, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkguRAkkhEfu4JIjFgh7lrDbcv5jQ21ps",
+            authDomain: "lms1-2fdcb.firebaseapp.com",
+            projectId: "lms1-2fdcb",
+            storageBucket: "lms1-2fdcb.appspot.com",
+            messagingSenderId: "952940918932",
+            appId: "1:952940918932:web:9f757d9f2d77e445049c81"
+        };
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+        const user = auth.currentUser;
+        let user_id= auth.currentUser;
+
+        const db = getFirestore(app);
+        const colRef = collection(db, 'student');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/auth.user
+                user_id=user.uid;
+                document.getElementById("username").textContent = user.email;
+                getName().then((books) => {
+                    document.getElementById("name").innerHTML = `${books}`
+                }).catch((error) => {
+                    console.error('Error getting books:', error);
+                });
+                // ...
+            } else {
+                // User is signed out
+                console.log('no log in')
+                // ...
+            }
+        });
+        
+        async function getName() {
+            const patron = doc(db, 'student', user_id)
+            let name='';
+            const patron_info = await getDoc(patron)
+            if (patron_info.exists()) {
+                 name = patron_info.data().name
+                
+            }
+            else {
+                console.log('No books issued')
+            }
+            return name;
+        }
+
+    </script>
+
+    <script>
+                function openChangePasswordForm() {
+            var changePasswordForm = document.getElementById("changePasswordForm");
+            changePasswordForm.classList.toggle("hidden");
+        }
+    </script>
+
+</body>
+</html>
