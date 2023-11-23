@@ -1,5 +1,6 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
+
     margin: 0;
     padding: 0;
     background-color: #f2f2f2;
@@ -8,8 +9,10 @@ body {
 header {
     background-color: #333333;
     color: #fff;
-    text-align: center;
-    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 10px;
 }
 h1 {
     font-size: 28px;
@@ -65,11 +68,20 @@ section.catalouge{
     border-radius: 5px;
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
 }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
 table {
     margin: auto;
     width: 100%;
     border-collapse: collapse;
     text-align: center;
+    
 }
 table.books th {
     background-color: #333;
@@ -79,6 +91,7 @@ table.books th {
 }
 table.books tr {
     border-bottom: 1px solid #ccc;
+    animation: fadeIn 1s ease-in-out;
 }
 table.books td {
     padding: 10px;
@@ -103,3 +116,51 @@ footer>a:hover
 {
     color:coral;
 }
+#logOut
+{
+    background-color: white;
+    color: black;
+    border: none;
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    width: 100%;
+}
+
+#list {
+    margin: 0;
+    padding: 0;
+    width: 3vw;
+    height: 3vw;
+    border: none;
+    background-color:#333333;
+}
+
+h1 {
+    margin: 0;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.offcanvas-header{
+    background-color:#333333;
+}
+
+.offcanvas-body {
+    background-color: #f2f2f2;
+    color: black;
+}
+#studentIdDisplay {
+    display: inline-block;
+}
+
+.offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dropdown {
+    margin-top: auto; 
+}
+

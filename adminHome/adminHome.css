@@ -9,8 +9,11 @@ body {
 header {
     background-color: #333333;
     color: #fff;
-    text-align: center;
-    padding: 20px 0;
+    /* text-align: center; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 10px;
 }
 h1 {
     font-size: 28px;
@@ -22,42 +25,23 @@ h1 {
     place-items: center;
     align-content: center;
     font-family: 'Poppins', sans-serif;
-    min-height: 80vh;
-    font-size:30px;
+    margin: 15px;
 }
 
-#t1 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
-.btn
-{
-    width: 13vw;
-    height: 13vw;
-    font-size: large;
-    font-weight: bold;
-    font-family: 'Poppins', sans-serif;
-    margin: 4px;
-    border-radius: 10px;
-    margin-top: 5vw;
-    margin-bottom: 10vw;
+/* Apply animation to the h4 element */
+#t h4 {
 
-    opacity: 0;
-    filter: blur(20px);
-    transform: translateX(-100%);
-    transition: all 0.5s;
-
+    animation: fadeIn 1s ease-in-out;
 }
-.btn:hover
-{
-    background-color: grey;
-    color: white;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
 footer
 {
     font-size: large;
@@ -65,40 +49,82 @@ footer
     margin-top: 13vw;
 }
 
-.show {
-    opacity: 1;
-    filter: blur(0);
-    transform: translateX(0);
-}
-
-.btn:nth-child(2) {
-    transition-delay: 200ms;
-}
-
-.btn:nth-child(3) {
-    transition-delay: 400ms;
-}
-
-.btn:nth-child(4) {
-    transition-delay: 500ms;
-}
 
 #logOut
 {
-    color: #333333;
-    text-decoration: none;
-    margin: 20px;
-    border-radius: 8px;
-    border: 1px solid #333333;
-    padding: 10px;
-    width: 7em;
-    text-align: center;
-    font-weight: bold;
+    background-color: white;
+    border: none;
+    margin: 0;
+    width: 100%;
 }
 
-#logOut:hover
-{
-    color:coral;
-    background-color: lightcoral;
-    color: #fff;
+#list {
+    margin: 0;
+    padding: 0;
+    width: 3vw;
+    height: 3vw;
+    border: none;
+    background-color:#333333;
+}
+
+h1 {
+    /* border: solid; */
+    margin: 0;
+    text-align: center; /* Center the text */
+    flex-grow: 1;
+}
+
+.offcanvas-header{
+    background-color:#333333;
+}
+
+.offcanvas-body {
+    background-color: #f2f2f2;
+    color: black;
+}
+#studentIdDisplay {
+    display: inline-block;
+}
+
+.offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dropdown {
+    margin-top: auto; 
+}
+
+.cardBody {
+    float: left;
+    width: 50%;
+}
+
+.card {
+    width: 23%;
+    height: 170px;
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+.card:hover {
+    transform: scale(1.07); 
+}
+h2 {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+}
+.card:hover h2{
+    display: block;
+    opacity: 1; 
+
+}
+
+.cardBody h4 {
+    transition: opacity 0.3s ease; /* Transition for h4 opacity */
+}
+.card:hover .cardBody h4 {
+    opacity: 1; 
+
 }

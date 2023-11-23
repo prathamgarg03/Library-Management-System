@@ -5,21 +5,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Admin Home </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
     <link rel="stylesheet" href="adminHome.css">
+
 </head>
+
 <body>
     <header>
-        <h1> Admin Home </h1>
-        <div id="studentIdDisplay"></div> <button type="button" id="logOut">Log Out</button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" id="list">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-list"
+                viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+            </svg>
+        </button>
+
+        <div class="offcanvas offcanvas-start text-bg-dark" data-bs-scroll="true" tabindex="-1"
+            id="offcanvasWithBothOptions" aria-labelledby="offcanvasDarkLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasDarkLabel">
+                    Library Management System
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                    aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="../adminHome/adminHome.html" class="nav-link active" aria-current="page">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                class="bi bi-house" viewBox="0 0 16 16">
+                                <path
+                                    d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
+                            </svg>
+                            &nbsp;Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../add_remove/add_remove.html" class="nav-link link-body-emphasis">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                class="bi bi-collection" viewBox="0 0 16 16">
+                                <path
+                                    d="M2.5 3.5a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1zm2-2a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1zM0 13a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V6a1.5 1.5 0 0 0-1.5-1.5h-13A1.5 1.5 0 0 0 0 6zm1.5.5A.5.5 0 0 1 1 13V6a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-.5.5z" />
+                            </svg>
+                            &nbsp;Modify Catalouge
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../manage_students/manage_students.html" class="nav-link link-body-emphasis">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                class="bi bi-backpack" viewBox="0 0 16 16">
+                                <path
+                                    d="M4.04 7.43a4 4 0 0 1 7.92 0 .5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14M4 9.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm1 .5v3h6v-3h-1v.5a.5.5 0 0 1-1 0V10z" />
+                                <path
+                                    d="M6 2.341V2a2 2 0 1 1 4 0v.341c2.33.824 4 3.047 4 5.659v5.5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5V8a6.002 6.002 0 0 1 4-5.659M7 2v.083a6.04 6.04 0 0 1 2 0V2a1 1 0 0 0-2 0m1 1a5 5 0 0 0-5 5v5.5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5V8a5 5 0 0 0-5-5" />
+                            </svg>
+                            &nbsp;Manage Students
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../books_issued/books_issued.html" class="nav-link link-body-emphasis">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                class="bi bi-journal" viewBox="0 0 16 16">
+                                <path
+                                    d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
+                                <path
+                                    d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+                            </svg>
+                            &nbsp;Issued Books
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../defaulter_list/defaulter_list.html" class="nav-link link-body-emphasis">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                class="bi bi-wallet2" viewBox="0 0 16 16">
+                                <path
+                                    d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499L12.136.326zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z" />
+                            </svg>
+                            &nbsp;Fines Due
+                        </a>
+                    </li>
+                </ul>
+                <div class="dropdown">
+                    <hr>
+                    <a href="#"
+                        class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor"
+                            class="bi bi-person" viewBox="0 0 16 16">
+                            <path
+                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z" />
+                        </svg>
+                        <strong>
+                            <div id="studentIdDisplay"></div>
+                        </strong>
+
+                    </a>
+                    <ul class="dropdown-menu text-small shadow">
+                        <li style="text-align: center;"><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><button type="button" id="logOut">Log Out</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <h1>Admin Home&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+        <!-- <div id="studentIdDisplay"></div> <button type="button" id="logOut">Log Out</button> -->
     </header>
-    <section id = "t"> <h2>Welcome to the Admin DashBoard! </h2> <p>Please select an option to continue.<p> </section>
-    <section id = "t1">
-        <input class="btn" type="submit" value=" Modify Catalogue" id="addButton">
-        <input class="btn" type="submit" value=" Manage Students " id="manage_student">
-        <input class="btn" type="submit" value=" Issued Books " id="bookIssued">
-        <input class="btn" type="submit" value=" Fines Due " id="defaulter">
-    </section>
-    <script src="adminHome.js" defer> </script>
+    <main>
+        <section id="t">
+            <br>
+            <h4>Welcome to the Admin DashBoard! </h4>
+            <p></p>
+        </section>
+        <section class="d-flex justify-content-around">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <section class="cardBody">
+                        <h2 id="tBooks"><strong>6</strong></h2>
+                        <h4>Total <br> Books</h4>
+                    </section>
+                    <section class="cardBody">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor"
+                            class="bi bi-book" viewBox="0 0 16 16">
+                            <path
+                                d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783" />
+                        </svg>
+                    </section>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+            <div class="card text-white bg-info mb-3">
+                <div class="card-body">
+                    <section class="cardBody">
+                        <h2 id="tStdnt"><strong>6</strong></h2>
+                        <h4>Total Students</h4>
+                    </section>
+                    <section class="cardBody">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor"
+                            class="bi bi-mortarboard" viewBox="0 0 16 16" class="card_icon">
+                            <path
+                                d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5ZM8 8.46 1.758 5.965 8 3.052l6.242 2.913z" />
+                            <path
+                                d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46l-3.892-1.556Z" />
+                        </svg>
+                    </section>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <section class="cardBody">
+                        <h2 id="tBookIss"><strong>6</strong></h2>
+                        <h4>Total Books Issued</h4>
+                    </section>
+                    <section class="cardBody">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor"
+                            class="bi bi-cart2" viewBox="0 0 16 16">
+                            <path
+                                d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5M3.14 5l.5 2H5V5zM6 5v2h2V5zm3 0v2h2V5zm3 0v2h1.36l.5-2zm1.11 3H12v2h.61zM11 8H9v2h2zM8 8H6v2h2zM5 8H3.89l.5 2H5zm0 5a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0m9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0" />
+                        </svg>
+                    </section>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <section class="cardBody">
+                        <h2 id="tFine"><strong>6</strong></h2>
+                        <h4>Total Fines Due</h4>
+                    </section>
+                    <section class="cardBody">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="150" height="100" fill="currentColor"
+                            class="bi bi-receipt" viewBox="0 0 16 16">
+                            <path
+                                d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z" />
+                            <path
+                                d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5" />
+                        </svg>
+                    </section>
+                </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
@@ -39,37 +226,28 @@
         const user = auth.currentUser;
 
         const db = getFirestore(app);
-        const colRef = collection(db, 'admin');
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/auth.user
                 document.getElementById("studentIdDisplay").textContent = user.email;
-                
-                // ...
+                total('books').then((books) => {
+                    document.getElementById("tBooks").innerHTML = `<strong>${books}<strong>`
+                }).catch((error) => {
+                    console.error('Error getting books:', error);
+                });
+                total('student').then((stdnt) => {
+                    document.getElementById("tStdnt").innerHTML = `<strong>${stdnt}</strong>`
+                })
+                total('loan').then((issue) => {
+                    document.getElementById("tBookIss").innerHTML = `<strong>${issue}</strong>`
+                })
+                fine().then((sum) => {
+                    document.getElementById("tFine").innerHTML = `<strong>$${sum}</strong>`
+                })
             } else {
-                // User is signed out
                 console.log('no log in')
-                // ...
             }
         });
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    //entry.target.classList.remove('notShow');
-                    entry.target.classList.add('show');
-                } else {
-                    entry.target.classList.remove('show');
-                }
-            });
-        });
-
-        const hiddenElements = document.querySelectorAll('.btn');
-        hiddenElements.forEach((el) => {
-            //el.target.classList.add('notShow')
-            observer.observe(el)});
 
         const logOut = document.getElementById('logOut')
         logOut.addEventListener('click', () => {
@@ -82,6 +260,36 @@
                 // An error happened.
             });
         })
+
+        async function total(ref) {
+            const colRef = collection(db, ref);
+            try {
+                const querySnapshot = await getDocs(colRef);
+                const numberOfDocs = querySnapshot.size;
+                return numberOfDocs;
+            } catch (error) {
+                console.log("Error getting documents:", error);
+                return 0;
+            }
+        }
+        async function fine() {
+            const colRef = collection(db, 'loan');
+            const issue_info = await getDocs(colRef)
+            let sum = 0
+            issue_info.forEach((doc) => {
+                const loans = doc.data()
+                let timestampString = loans.timestamp;
+                timestampString = timestampString.replace(/^"|"$/g, '');
+                const issueDate = new Date(timestampString)
+                const issueDateString = ((issueDate).toISOString().split('T')[0]);
+                const todayDate = (new Date())
+                const defaulter = Math.floor((todayDate - issueDate) / (1000 * 60 * 60 * 24));
+                if (defaulter > 14) {
+                    sum += parseFloat(1.5 * (defaulter - 14))
+                }
+            })
+            return sum
+        }
     </script>
 </body>
 
