@@ -9,12 +9,13 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
     <link rel="stylesheet" href="adminHome.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
 <body>
     <header>
-        <button  class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" id="list">
             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-list"
                 viewBox="0 0 16 16">
@@ -106,7 +107,8 @@
 
                     </a>
                     <ul class="dropdown-menu text-small shadow">
-                        <li style="text-align: center;"><a class="dropdown-item" href="../profile/changeProfile.html">Profile</a></li>
+                        <li style="text-align: center;"><a class="dropdown-item"
+                                href="../profile/changeProfile.html">Profile</a></li>
                         <li><button type="button" id="logOut">Log Out</button></li>
                     </ul>
                 </div>
@@ -123,7 +125,7 @@
         </section>
         <section class="d-flex justify-content-around">
             <div class="card text-white bg-success mb-3" id="card1">
-                <div class="card-body" >
+                <div class="card-body">
                     <section class="cardBody">
                         <h2 id="tBooks">&nbsp;</h2>
                         <h4>Total <br> Books</h4>
@@ -199,6 +201,9 @@
                 </div>
             </div>
         </section>
+        <section class="chart">
+            <canvas id="myChart"></canvas>
+        </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -227,6 +232,7 @@
 
         const db = getFirestore(app);
 
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 document.getElementById("studentIdDisplay").textContent = user.email;
@@ -241,8 +247,8 @@
                 total('loan').then((issue) => {
                     document.getElementById("tBookIss").innerHTML = `<strong>${issue}</strong>`
                 })
-                fine().then((sum) => {
-                    document.getElementById("tFine").innerHTML = `<strong>$${sum}</strong>`
+                fine().then((sums) => {
+                    document.getElementById("tFine").innerHTML = `<strong>$${sums.sum}</strong>`
                 })
             } else {
                 console.log('no log in')
@@ -276,42 +282,97 @@
             const colRef = collection(db, 'loan');
             const issue_info = await getDocs(colRef)
             let sum = 0
+            let issueDateArray = []
             issue_info.forEach((doc) => {
                 const loans = doc.data()
                 let timestampString = loans.timestamp;
                 timestampString = timestampString.replace(/^"|"$/g, '');
                 const issueDate = new Date(timestampString)
                 const issueDateString = ((issueDate).toISOString().split('T')[0]);
+                issueDateArray.push(issueDateString)
                 const todayDate = (new Date())
                 const defaulter = Math.floor((todayDate - issueDate) / (1000 * 60 * 60 * 24));
                 if (defaulter > 14) {
                     sum += parseFloat(1.5 * (defaulter - 14))
                 }
             })
-            return sum
+            return { sum, issueDateArray }
         }
 
-        document.getElementById("card1").addEventListener('click', ()=>
-        {
+        document.getElementById("card1").addEventListener('click', () => {
             const path = "../add_remove/add_remove.html";
-            window.open(path,"_self");
+            window.open(path, "_self");
         })
-        document.getElementById("card2").addEventListener('click', ()=>
-        {
+        document.getElementById("card2").addEventListener('click', () => {
             const path = "../manage_students/manage_students.html";
-            window.open(path,"_self");
+            window.open(path, "_self");
         })
-        document.getElementById("card3").addEventListener('click', ()=>
-        {
+        document.getElementById("card3").addEventListener('click', () => {
             const path = "../books_issued/books_issued.html";
-            window.open(path,"_self");
+            window.open(path, "_self");
         })
-        document.getElementById("card4").addEventListener('click', ()=>
-        {
+        document.getElementById("card4").addEventListener('click', () => {
             const path = "../defaulter_list/defaulter_list.html";
-            window.open(path,"_self");
+            window.open(path, "_self");
         })
-        
+
+        getChart()
+        async function getChart() {
+            const data = await getData()
+            const ctx = document.getElementById('myChart');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.xLabel,
+                    datasets: [{
+                        label: 'Books Issued This Month',
+                        data: data.yLabel,
+                        borderWidth: 1
+                    }]
+                }
+            });
+        }
+
+        async function getData() {
+            const date = new Date()
+            const month = date.getMonth()
+            const year = date.getFullYear()
+            const weekInfo = await week(month, year)
+            const xLabel = weekInfo.label
+            const a = await fine()
+            const yLabel = await yAxis(month, year, a.issueDateArray, weekInfo.weeksArray)
+            return { xLabel, yLabel }
+        }
+        async function week(month, year) {
+            const weeksArray = []
+            const label = []
+            const startDate = (new Date(year, month, 1)).getDate()
+            const endDate = (new Date(year, month + 1, 0)).getDate()
+            for (let i = 1; i < endDate; i += 7) {
+                label.push(`Week  ${parseInt(i / 7) + 1}`)
+                const start = new Date(year, month, i).getDate()
+                const end = new Date(year, month, Math.min(i + 6, endDate)).getDate()
+                weeksArray.push(`${start} - ${end}`)
+            }
+            return { weeksArray, label }
+        }
+        async function yAxis(month, year, issueDateArray, weeks) {
+            const dateCount = new Array(weeks.length).fill(0)
+            issueDateArray.forEach((date) => {
+                if (month === (new Date(date)).getMonth()) {
+                    const dateToCheck = (new Date(date)).getDate() + 1
+                    weeks.forEach((week, index) => {
+                        const [start, end] = week.split(' - ')
+                        const startDate = parseInt(start)
+                        const endDate = parseInt(end)
+                        if (dateToCheck >= startDate && dateToCheck <= endDate) {
+                            dateCount[index]++
+                        }
+                    })
+                }
+            })
+            return dateCount
+        }
     </script>
 </body>
 
