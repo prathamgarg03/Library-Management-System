@@ -14,7 +14,7 @@
 
 <body>
     <header>
-        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+        <button  class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
             data-bs-target="#offcanvasWithBothOptions" aria-controls="offcanvasWithBothOptions" id="list">
             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-list"
                 viewBox="0 0 16 16">
@@ -122,8 +122,8 @@
             <p></p>
         </section>
         <section class="d-flex justify-content-around">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-body">
+            <div class="card text-white bg-success mb-3" id="card1">
+                <div class="card-body" >
                     <section class="cardBody">
                         <h2 id="tBooks"><strong>6</strong></h2>
                         <h4>Total <br> Books</h4>
@@ -140,7 +140,7 @@
 
                 </div>
             </div>
-            <div class="card text-white bg-info mb-3">
+            <div class="card text-white bg-info mb-3" id="card2">
                 <div class="card-body">
                     <section class="cardBody">
                         <h2 id="tStdnt"><strong>6</strong></h2>
@@ -160,7 +160,7 @@
 
                 </div>
             </div>
-            <div class="card text-white bg-warning mb-3">
+            <div class="card text-white bg-warning mb-3" id="card3">
                 <div class="card-body">
                     <section class="cardBody">
                         <h2 id="tBookIss"><strong>6</strong></h2>
@@ -178,7 +178,7 @@
 
                 </div>
             </div>
-            <div class="card text-white bg-danger mb-3">
+            <div class="card text-white bg-danger mb-3" id="card4">
                 <div class="card-body">
                     <section class="cardBody">
                         <h2 id="tFine"><strong>6</strong></h2>
@@ -290,6 +290,28 @@
             })
             return sum
         }
+
+        document.getElementById("card1").addEventListener('click', ()=>
+        {
+            const path = "../add_remove/add_remove.html";
+            window.open(path,"_self");
+        })
+        document.getElementById("card2").addEventListener('click', ()=>
+        {
+            const path = "../manage_students/manage_students.html";
+            window.open(path,"_self");
+        })
+        document.getElementById("card3").addEventListener('click', ()=>
+        {
+            const path = "../books_issued/books_issued.html";
+            window.open(path,"_self");
+        })
+        document.getElementById("card4").addEventListener('click', ()=>
+        {
+            const path = "../defaulter_list/defaulter_list.html";
+            window.open(path,"_self");
+        })
+        
     </script>
 </body>
 
