@@ -5,19 +5,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Management System</title>
-    <link rel="stylesheet" href="adminLogin.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <body>
-    <header>
-        <h1>Library Management System</h1>
-    </header>
-    <main>
-        <section id="home">
-            Admin Login <a href="./adminLogin/adminLogin.html">Click Here</a>&nbsp &nbsp &nbsp
-            Student Login <a href="./studentLogin/studentLogin.html">Click Here</a>
-        </section>
-    </main>
+<header>
+    <nav>
+        <div class="logo">
+            <h1>Library Management System</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#users">User Roles</a></li>
+            <li><a href="./adminLogin/adminLogin.html" class="login-btn">Admin Login</a></li>
+            <li><a href="./studentLogin/studentLogin.html" class="login-btn">Patron Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-content">
+            <h2>Welcome to the Future of Library Management</h2>
+            <p>Your one-stop solution for cataloging, patron management, and data-driven decision-making.</p>
+            <a href="#features" class="cta-btn">Explore Features</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <h2>Key Features</h2>
+        <div class="feature-cards">
+            <div class="card">
+                <h3>Book Cataloging</h3>
+                <p>Easily catalog new books and update the collection with automated workflows.</p>
+            </div>
+            <div class="card">
+                <h3>Patron Management</h3>
+                <p>Track loans, send overdue reminders, and manage patron records with ease.</p>
+            </div>
+            <div class="card">
+                <h3>Analytics & Reports</h3>
+                <p>Generate custom reports on library usage, inventory, and patron activity.</p>
+            </div>
+            <div class="card">
+                <h3>Supplier Management</h3>
+                <p>Integrate with vendors and manage book orders and supplies efficiently.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Roles Section -->
+    <section id="users">
+        <h2>Our Users</h2>
+        <div class="user-roles">
+            <div class="role">
+                <h3>Librarians & Staff</h3>
+                <p>Efficient cataloging, managing loans, and streamlining operations.</p>
+            </div>
+            <div class="role">
+                <h3>Library Patrons</h3>
+                <p>Search for books, manage loans, and receive reminders for overdue items.</p>
+            </div>
+            <div class="role">
+                <h3>Administrators</h3>
+                <p>Access analytics and reports for data-driven decision-making.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2025 Library Management System. All rights reserved.</p>
+</footer>
 </body>
 
 </html>
